@@ -221,28 +221,30 @@
   }
   .glass-tile {
     background:
-      linear-gradient(135deg, oklch(1 0 0 / 0.09), oklch(1 0 0 / 0.02) 60%, oklch(1 0 0 / 0.05)),
-      oklch(0.28 0.006 270 / 0.22);
+      linear-gradient(135deg, oklch(1 0 0 / 0.08), oklch(1 0 0 / 0.015) 60%, oklch(1 0 0 / 0.04)),
+      oklch(0.14 0.005 270 / 0.48);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid oklch(1 0 0 / 0.12);
+    border: 1px solid oklch(1 0 0 / 0.14);
     box-shadow:
-      0 8px 24px oklch(0 0 0 / 0.32),
-      inset 0 1px 0 oklch(1 0 0 / 0.18),
-      inset 0 -1px 0 oklch(0 0 0 / 0.18),
+      0 18px 40px oklch(0 0 0 / 0.5),
+      0 4px 12px oklch(0 0 0 / 0.35),
+      inset 0 1px 0 oklch(1 0 0 / 0.2),
+      inset 0 -1px 0 oklch(0 0 0 / 0.25),
       inset 1px 0 0 oklch(1 0 0 / 0.06);
     transition: background 240ms ease, border-color 240ms ease, transform 240ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 240ms ease;
   }
   .glass-tile:hover {
     transform: translateY(-2px);
-    border-color: oklch(1 0 0 / 0.2);
+    border-color: oklch(1 0 0 / 0.22);
     background:
-      linear-gradient(135deg, oklch(1 0 0 / 0.14), oklch(1 0 0 / 0.04) 60%, oklch(1 0 0 / 0.08)),
-      oklch(0.32 0.006 270 / 0.26);
+      linear-gradient(135deg, oklch(1 0 0 / 0.12), oklch(1 0 0 / 0.03) 60%, oklch(1 0 0 / 0.06)),
+      oklch(0.16 0.005 270 / 0.52);
     box-shadow:
-      0 14px 34px oklch(0 0 0 / 0.38),
-      inset 0 1px 0 oklch(1 0 0 / 0.24),
-      inset 0 -1px 0 oklch(0 0 0 / 0.18);
+      0 24px 50px oklch(0 0 0 / 0.55),
+      0 6px 16px oklch(0 0 0 / 0.4),
+      inset 0 1px 0 oklch(1 0 0 / 0.26),
+      inset 0 -1px 0 oklch(0 0 0 / 0.25);
   }
   .mail-reader-title,
   .mail-reader-meta,
