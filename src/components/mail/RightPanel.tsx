@@ -151,18 +151,6 @@ export function RightPanel({
               <div className="truncate text-[11px] text-muted-foreground">{email.email}</div>
             </div>
           </div>
-          <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-            {[
-              { k: "Threads", v: 24 },
-              { k: "Replied", v: "97%" },
-              { k: "Avg time", v: "2h" },
-            ].map((s) => (
-              <div key={s.k} className="rounded-lg border border-white/5 bg-white/[0.03] py-2">
-                <div className="text-sm font-medium text-foreground">{s.v}</div>
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</div>
-              </div>
-            ))}
-          </div>
         </Card>
       )}
     </aside>
@@ -173,7 +161,15 @@ function Card({ children }: { children: React.ReactNode }) {
   return <div className="glass rounded-2xl p-4">{children}</div>;
 }
 
-function SectionHeader({ icon: Icon, title, badge }: { icon: any; title: string; badge?: string }) {
+function SectionHeader({
+  icon: Icon,
+  title,
+  badge,
+}: {
+  icon: LucideIcon;
+  title: string;
+  badge?: string;
+}) {
   return (
     <div className="flex items-center gap-2">
       <Icon className="h-3.5 w-3.5 text-muted-foreground" />
