@@ -147,7 +147,11 @@ export function EmailView({
                   </AnimatePresence>
                 </div>
                 {[
-                  { icon: ReplyAll, label: "Reply all", onClick: () => actions.onReplyAll?.(email) },
+                  {
+                    icon: ReplyAll,
+                    label: "Reply all",
+                    onClick: () => actions.onReplyAll?.(email),
+                  },
                   { icon: Forward, label: "Forward", onClick: () => actions.onForward?.(email) },
                 ].map(({ icon: Icon, label, onClick }) => (
                   <motion.button
@@ -157,7 +161,8 @@ export function EmailView({
                     onClick={onClick}
                     className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground transition hover:bg-white/[0.06] hover:text-foreground"
                   >
-                    <Icon className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{label}</span>
+                    <Icon className="h-3.5 w-3.5" />{" "}
+                    <span className="hidden sm:inline">{label}</span>
                   </motion.button>
                 ))}
               </div>
