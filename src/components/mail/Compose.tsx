@@ -49,6 +49,8 @@ export function Compose({
   initialTo?: string;
   initialSubject?: string;
   initialBody?: string;
+  initialPostage?: string;
+  onSubmit?: (submission: ComposeSubmission) => void;
 }) {
   const [to, setTo] = useState(initialTo);
   const [subject, setSubject] = useState(initialSubject);
@@ -58,8 +60,8 @@ export function Compose({
   const [isSending, setIsSending] = useState(false);
   const [encrypted, setEncrypted] = useState(true);
   const [receipt, setReceipt] = useState(true);
-  const [postage, setPostage] = useState("0.0001");
-  
+  const [postage, setPostage] = useState(initialPostage);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
