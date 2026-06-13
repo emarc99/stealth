@@ -78,10 +78,11 @@ export function RightPanel({
               key={action}
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => onShowToast(`${a} action applied`)}
-              className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-foreground/90 transition hover:bg-white/[0.08]"
+              disabled={!email}
+              onClick={() => runAction(action)}
+              className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-foreground/90 transition hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {a}
+              {action[0].toUpperCase() + action.slice(1)}
             </motion.button>
           ))}
         </div>
