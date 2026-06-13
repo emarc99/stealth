@@ -150,18 +150,22 @@ export function NotificationsPanel({
                         !n.read && "bg-white/[0.02]",
                       )}
                     >
-                      <div className={cn(
-                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
-                        !n.read ? "bg-white/10" : "bg-white/5"
-                      )}>
+                      <div
+                        className={cn(
+                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
+                          !n.read ? "bg-white/10" : "bg-white/5",
+                        )}
+                      >
                         <Icon className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <p className={cn(
-                            "truncate text-sm",
-                            !n.read ? "font-medium text-foreground" : "text-foreground/80"
-                          )}>
+                          <p
+                            className={cn(
+                              "truncate text-sm",
+                              !n.read ? "font-medium text-foreground" : "text-foreground/80",
+                            )}
+                          >
                             {n.title}
                           </p>
                           {!n.read && (
@@ -171,9 +175,7 @@ export function NotificationsPanel({
                         <p className="truncate text-xs text-muted-foreground">{n.message}</p>
                         <p className="mt-1 text-[10px] text-muted-foreground/70">{n.time}</p>
                       </div>
-                      {n.read && (
-                        <Check className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-                      )}
+                      {n.read && <Check className="h-4 w-4 shrink-0 text-muted-foreground/50" />}
                     </button>
                   </li>
                 );
