@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiV1ProtocolRouteImport } from './routes/api/v1/protocol'
+import { Route as ApiV1OpenapiDotjsonRouteImport } from './routes/api/v1/openapi[.]json'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as ApiV1ReceiptsIndexRouteImport } from './routes/api/v1/receipts/index'
 import { Route as ApiV1PostageIndexRouteImport } from './routes/api/v1/postage/index'
@@ -32,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiV1ProtocolRoute = ApiV1ProtocolRouteImport.update({
   id: '/api/v1/protocol',
   path: '/api/v1/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1OpenapiDotjsonRoute = ApiV1OpenapiDotjsonRouteImport.update({
+  id: '/api/v1/openapi.json',
+  path: '/api/v1/openapi.json',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1HealthRoute = ApiV1HealthRouteImport.update({
@@ -102,6 +108,7 @@ const ApiV1PoliciesOwnerSendersSenderRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/v1/protocol': typeof ApiV1ProtocolRoute
   '/api/v1/policies/$owner': typeof ApiV1PoliciesOwnerRouteWithChildren
   '/api/v1/policies/evaluate': typeof ApiV1PoliciesEvaluateRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/v1/protocol': typeof ApiV1ProtocolRoute
   '/api/v1/policies/$owner': typeof ApiV1PoliciesOwnerRouteWithChildren
   '/api/v1/policies/evaluate': typeof ApiV1PoliciesEvaluateRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/openapi.json': typeof ApiV1OpenapiDotjsonRoute
   '/api/v1/protocol': typeof ApiV1ProtocolRoute
   '/api/v1/policies/$owner': typeof ApiV1PoliciesOwnerRouteWithChildren
   '/api/v1/policies/evaluate': typeof ApiV1PoliciesEvaluateRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api/v1/health'
+    | '/api/v1/openapi.json'
     | '/api/v1/protocol'
     | '/api/v1/policies/$owner'
     | '/api/v1/policies/evaluate'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/api/v1/health'
+    | '/api/v1/openapi.json'
     | '/api/v1/protocol'
     | '/api/v1/policies/$owner'
     | '/api/v1/policies/evaluate'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/api/v1/health'
+    | '/api/v1/openapi.json'
     | '/api/v1/protocol'
     | '/api/v1/policies/$owner'
     | '/api/v1/policies/evaluate'
@@ -202,6 +214,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiV1HealthRoute: typeof ApiV1HealthRoute
+  ApiV1OpenapiDotjsonRoute: typeof ApiV1OpenapiDotjsonRoute
   ApiV1ProtocolRoute: typeof ApiV1ProtocolRoute
   ApiV1PoliciesOwnerRoute: typeof ApiV1PoliciesOwnerRouteWithChildren
   ApiV1PoliciesEvaluateRoute: typeof ApiV1PoliciesEvaluateRoute
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/protocol'
       fullPath: '/api/v1/protocol'
       preLoaderRoute: typeof ApiV1ProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/openapi.json': {
+      id: '/api/v1/openapi.json'
+      path: '/api/v1/openapi.json'
+      fullPath: '/api/v1/openapi.json'
+      preLoaderRoute: typeof ApiV1OpenapiDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/health': {
@@ -358,6 +378,7 @@ const ApiV1ReceiptsMessageIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiV1HealthRoute: ApiV1HealthRoute,
+  ApiV1OpenapiDotjsonRoute: ApiV1OpenapiDotjsonRoute,
   ApiV1ProtocolRoute: ApiV1ProtocolRoute,
   ApiV1PoliciesOwnerRoute: ApiV1PoliciesOwnerRouteWithChildren,
   ApiV1PoliciesEvaluateRoute: ApiV1PoliciesEvaluateRoute,
