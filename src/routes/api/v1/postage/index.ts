@@ -23,7 +23,17 @@ export const Route = createFileRoute("/api/v1/postage/")({
         handleApiRequest(request, async () => {
           const input = await parseJsonBody(request, submissionSchema);
           requireActorMatches(request, input.sender);
-          const postage = await submitPostage(getApiContext().repository, input);
+          const ip =
+            request.headers.get("cf-connecting-ip") ??
+            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+            "unknown";
+          const relayId = request.headers.get("x-stealth-relay-id") ?? undefined;
+          const postage = await submitPostage(
+            getApiContext().repository,
+            input,
+            new Date(),
+            { ip, relayId },
+          );
           return apiSuccess(request, postage, { status: 201 });
         }),
     },
