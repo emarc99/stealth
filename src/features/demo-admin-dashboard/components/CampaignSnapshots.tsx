@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   AlertTriangle,
+  BookOpen,
   Calendar,
   Check,
   FolderHeart,
@@ -15,6 +16,13 @@ import { cn } from "@/lib/utils";
 import type { Draft } from "../types/draft";
 import type { CampaignSnapshot } from "../types/campaignSnapshot";
 import { saveCampaignSnapshots, loadCampaignSnapshots } from "../persistence/localStorageAdapter";
+import {
+  CAMPAIGN_STATUS_TOKENS,
+  getTagToken,
+  getAudienceToken,
+  TAG_COLOR_TOKENS,
+  AUDIENCE_BADGE_TOKENS,
+} from "../constants/displayTokens";
 
 interface CampaignSnapshotsProps {
   currentDataset: Draft[];
@@ -35,7 +43,11 @@ export function CampaignSnapshots({
   const [description, setDescription] = useState("");
   const [targetAudience, setTargetAudience] = useState("");
   const [tagsInput, setTagsInput] = useState("");
+  const [status, setStatus] = useState<"active" | "draft" | "needs-review" | "archived">("draft");
   const [formError, setFormError] = useState("");
+
+  // State for reference section visibility
+  const [showRef, setShowRef] = useState(false);
 
   // State for restore confirmation dialog
   const [confirmRestoreTarget, setConfirmRestoreTarget] = useState<CampaignSnapshot | null>(null);
@@ -70,6 +82,7 @@ export function CampaignSnapshots({
       targetAudience: targetAudience.trim(),
       tags: newTags,
       timestamp: new Date().toISOString(),
+      status: status,
       drafts: [...currentDataset],
     };
 
@@ -80,6 +93,7 @@ export function CampaignSnapshots({
     setDescription("");
     setTargetAudience("");
     setTagsInput("");
+    setStatus("draft");
     setFormError("");
     setIsCreating(false);
   };
@@ -232,26 +246,47 @@ export function CampaignSnapshots({
                 type="text"
                 value={targetAudience}
                 onChange={(e) => setTargetAudience(e.target.value)}
-                placeholder="e.g. Active Stellar users"
+                placeholder="e.g. New Signups"
                 className="w-full rounded-lg border border-white/[0.08] bg-black/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-white/20 focus:outline-none"
                 required
               />
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label htmlFor="snap-desc" className="text-xs font-medium text-muted-foreground">
-              Description *
-            </label>
-            <textarea
-              id="snap-desc"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Provide a detailed summary of what this campaign tests."
-              rows={2}
-              className="w-full rounded-lg border border-white/[0.08] bg-black/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-white/20 focus:outline-none resize-none"
-              required
-            />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <label htmlFor="snap-desc" className="text-xs font-medium text-muted-foreground">
+                Description *
+              </label>
+              <input
+                id="snap-desc"
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Provide a detailed summary of what this campaign tests."
+                className="w-full rounded-lg border border-white/[0.08] bg-black/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-white/20 focus:outline-none"
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label htmlFor="snap-status" className="text-xs font-medium text-muted-foreground">
+                Campaign Status *
+              </label>
+              <select
+                id="snap-status"
+                value={status}
+                onChange={(e) =>
+                  setStatus(e.target.value as "active" | "draft" | "needs-review" | "archived")
+                }
+                className="w-full rounded-lg border border-white/[0.08] bg-black-90 px-3 py-2 text-xs text-foreground focus:border-white/20 focus:outline-none"
+                style={{ backgroundColor: "rgb(24 24 27)" }}
+              >
+                <option value="draft">Draft</option>
+                <option value="active">Active</option>
+                <option value="needs-review">Needs Review</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -302,87 +337,236 @@ export function CampaignSnapshots({
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {snapshots.map((snap) => (
-            <article
-              key={snap.id}
-              className="group flex flex-col justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition hover:border-white/[0.12] hover:bg-white/[0.03]"
-            >
-              {/* Header */}
-              <div className="space-y-2">
-                <div className="flex items-start justify-between gap-3">
-                  <h5 className="text-sm font-semibold text-foreground group-hover:text-sky-400 transition">
-                    {snap.name}
-                  </h5>
+          {snapshots.map((snap) => {
+            const statusVal = snap.status || "draft";
+            const statusToken = CAMPAIGN_STATUS_TOKENS[statusVal];
+            const audToken = getAudienceToken(snap.targetAudience);
+
+            return (
+              <article
+                key={snap.id}
+                className="group flex flex-col justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition hover:border-white/[0.12] hover:bg-white/[0.03]"
+              >
+                {/* Header */}
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <h5 className="text-sm font-semibold text-foreground group-hover:text-sky-400 transition">
+                        {snap.name}
+                      </h5>
+                      {/* Status Badge */}
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider",
+                          statusToken.bg,
+                          statusToken.text,
+                          statusToken.border,
+                        )}
+                      >
+                        {statusToken.label}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSnapshot(snap.id)}
+                      aria-label={`Delete campaign snapshot ${snap.name}`}
+                      className="opacity-0 group-hover:opacity-100 rounded-md p-1 text-muted-foreground transition hover:bg-white/[0.06] hover:text-rose-400"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {snap.description}
+                  </p>
+
+                  {/* Metadata details */}
+                  <div className="space-y-2 pt-2 border-t border-white/[0.04] text-[11px] text-muted-foreground">
+                    <div className="flex items-center gap-1.5">
+                      <Users className="h-3.5 w-3.5 shrink-0" />
+                      <span>
+                        Target:{" "}
+                        <span
+                          className={cn(
+                            "inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium ml-1",
+                            audToken.bg,
+                            audToken.text,
+                            audToken.border,
+                          )}
+                        >
+                          {audToken.label}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5 shrink-0" />
+                      <span>Saved: {new Date(snap.timestamp).toLocaleString()}</span>
+                    </div>
+                    {snap.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 items-center pt-1">
+                        <Tag className="h-3 w-3 shrink-0" />
+                        {snap.tags.map((tag) => {
+                          const tagToken = getTagToken(tag);
+                          return (
+                            <span
+                              key={tag}
+                              className={cn(
+                                "rounded-md border px-1.5 py-0.5 text-[9px] font-medium transition",
+                                tagToken.bg,
+                                tagToken.text,
+                                tagToken.border,
+                              )}
+                            >
+                              {tagToken.label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Draft list preview */}
+                  <div className="pt-3">
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                      Drafts ({snap.drafts.length})
+                    </span>
+                    <ul className="space-y-1 rounded-lg border border-white/[0.04] bg-black/20 p-2 max-h-24 overflow-y-auto">
+                      {snap.drafts.map((d) => (
+                        <li
+                          key={d.id}
+                          className="truncate text-[11px] text-foreground/80 hover:text-foreground"
+                        >
+                          • {d.subject}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Action */}
+                <div className="pt-4 flex justify-end">
                   <button
                     type="button"
-                    onClick={() => handleDeleteSnapshot(snap.id)}
-                    aria-label={`Delete campaign snapshot ${snap.name}`}
-                    className="opacity-0 group-hover:opacity-100 rounded-md p-1 text-muted-foreground transition hover:bg-white/[0.06] hover:text-rose-400"
+                    onClick={() => triggerRestore(snap)}
+                    className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-white/[0.08]"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <History className="h-3.5 w-3.5" /> Restore Snapshot
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">{snap.description}</p>
-
-                {/* Metadata details */}
-                <div className="space-y-1.5 pt-2 border-t border-white/[0.04] text-[11px] text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5 shrink-0" />
-                    <span>
-                      Target: <strong className="text-foreground">{snap.targetAudience}</strong>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 shrink-0" />
-                    <span>Saved: {new Date(snap.timestamp).toLocaleString()}</span>
-                  </div>
-                  {snap.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-1">
-                      <Tag className="h-3 w-3 mt-0.5 shrink-0" />
-                      {snap.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-md bg-white/[0.04] px-1.5 py-0.5 text-[9px] text-muted-foreground"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Draft list preview */}
-                <div className="pt-3">
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
-                    Drafts ({snap.drafts.length})
-                  </span>
-                  <ul className="space-y-1 rounded-lg border border-white/[0.04] bg-black/20 p-2 max-h-24 overflow-y-auto">
-                    {snap.drafts.map((d) => (
-                      <li
-                        key={d.id}
-                        className="truncate text-[11px] text-foreground/80 hover:text-foreground"
-                      >
-                        • {d.subject}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Action */}
-              <div className="pt-4 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => triggerRestore(snap)}
-                  className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-white/[0.08]"
-                >
-                  <History className="h-3.5 w-3.5" /> Restore Snapshot
-                </button>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
+
+      {/* ── Display Tokens Reference & Badge Examples (Docs) ── */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+        <button
+          type="button"
+          onClick={() => setShowRef(!showRef)}
+          className="flex w-full items-center justify-between text-left transition hover:text-foreground"
+        >
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-sky-400" />
+            <h5 className="text-sm font-semibold text-foreground">
+              Campaign Display Tokens Reference & Badge Examples
+            </h5>
+          </div>
+          <span className="text-xs text-muted-foreground hover:text-foreground">
+            {showRef ? "Collapse" : "Expand"} Reference
+          </span>
+        </button>
+
+        {showRef && (
+          <div className="mt-4 space-y-6 border-t border-white/[0.06] pt-4 text-xs">
+            <div>
+              <h6 className="font-bold text-foreground mb-2">Campaign Status Badges</h6>
+              <p className="text-muted-foreground mb-3 leading-relaxed">
+                Determines the operational status of the campaign. Configured tokens map statuses to
+                clear color codings:
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {Object.entries(CAMPAIGN_STATUS_TOKENS).map(([key, token]) => (
+                  <div
+                    key={key}
+                    className="flex items-center gap-2 rounded-lg border border-white/[0.04] p-2 bg-black/20"
+                  >
+                    <span
+                      className={cn(
+                        "rounded-full border px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider",
+                        token.bg,
+                        token.text,
+                        token.border,
+                      )}
+                    >
+                      {token.label}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{key}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h6 className="font-bold text-foreground mb-2">Campaign Tag Badges</h6>
+              <p className="text-muted-foreground mb-3 leading-relaxed">
+                Tags are mapped to semantic colors to distinguish categories (stellar updates,
+                security notifications, newsletter editions, etc.) with slate defaults for custom
+                tags:
+              </p>
+              <div className="grid gap-2 grid-cols-2 sm:grid-cols-4">
+                {Object.entries(TAG_COLOR_TOKENS).map(([key, token]) => (
+                  <div
+                    key={key}
+                    className="flex flex-col gap-1 rounded-lg border border-white/[0.04] p-2 bg-black/20"
+                  >
+                    <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
+                      {key}
+                    </span>
+                    <span
+                      className={cn(
+                        "inline-flex self-start rounded-md border px-1.5 py-0.5 text-[9px] font-medium",
+                        token.bg,
+                        token.text,
+                        token.border,
+                      )}
+                    >
+                      {token.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h6 className="font-bold text-foreground mb-2">Audience Badges</h6>
+              <p className="text-muted-foreground mb-3 leading-relaxed">
+                Target audiences identify demo user segments. Standard segments are explicitly
+                styled, and arbitrary entries fallback to purple templates:
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {Object.entries(AUDIENCE_BADGE_TOKENS).map(([key, token]) => (
+                  <div
+                    key={key}
+                    className="flex items-center gap-2 rounded-lg border border-white/[0.04] p-2 bg-black/20"
+                  >
+                    <span
+                      className={cn(
+                        "rounded-md border px-1.5 py-0.5 text-[9px] font-semibold",
+                        token.bg,
+                        token.text,
+                        token.border,
+                      )}
+                    >
+                      {token.label}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-mono">{key}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

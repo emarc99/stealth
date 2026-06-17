@@ -45,6 +45,8 @@ Contributors working on demo-admin issues should keep new dashboard code, local 
 
 `src/features/demo-admin-dashboard/`
 
+The rest of the app should only import stable entry points from this folder once the feature is ready to connect to the demo inbox. Avoid changing existing inbox, mail reader, calendar, sender-conversion, or protocol modules unless an issue explicitly asks for a minimal integration shim.
+
 ```bash
 npx vitest run src/features/demo-admin-dashboard/__tests__/
 ```

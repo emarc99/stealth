@@ -8,4 +8,5 @@ export interface CampaignSnapshot {
   tags: string[];
   timestamp: string;
   drafts: Draft[];
+  status?: "active" | "draft" | "needs-review" | "archived";
 }
