@@ -3,7 +3,7 @@ import type { PaymentRequest } from "../types";
 
 /**
  * usePaymentRequests Hook
- * 
+ *
  * Manages fetching and filtering of payment requests locally.
  * Handles loading, error, and sorting states.
  */
@@ -41,13 +41,19 @@ export function usePaymentRequests(options: UsePaymentRequestsOptions = {}) {
     }
   }, [options.onFetch, options.initialPayments, fetch]);
 
-  const filterByStatus = useCallback((status: string) => {
-    return payments.filter((p) => p.status === status);
-  }, [payments]);
+  const filterByStatus = useCallback(
+    (status: string) => {
+      return payments.filter((p) => p.status === status);
+    },
+    [payments],
+  );
 
-  const filterByPriority = useCallback((priority: string) => {
-    return payments.filter((p) => p.priority === priority);
-  }, [payments]);
+  const filterByPriority = useCallback(
+    (priority: string) => {
+      return payments.filter((p) => p.priority === priority);
+    },
+    [payments],
+  );
 
   const refresh = useCallback(async () => {
     await fetch();

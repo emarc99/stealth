@@ -10,29 +10,23 @@ interface EmptyStateProps {
 
 /**
  * EmptyState Component
- * 
+ *
  * Accessible empty state for when no payment requests exist.
- * 
+ *
  * Accessibility features:
  * - Semantic heading hierarchy with role="status" when used as state change
  * - Clear descriptive text for screen readers
  * - Action button receives focus for keyboard navigation
  */
-export function EmptyState({
-  action,
-  className,
-  description,
-  icon,
-  title,
-}: EmptyStateProps) {
+export function EmptyState({ action, className, description, icon, title }: EmptyStateProps) {
   return (
-    <div 
+    <div
       className={`mx-auto flex max-w-md flex-col items-center justify-center text-center py-12 px-4 ${className || ""}`}
       role="status"
       aria-label="No payment requests"
     >
       {icon ? (
-        <div 
+        <div
           className="glass-tile mb-6 flex size-14 items-center justify-center rounded-2xl text-foreground"
           aria-hidden="true"
         >

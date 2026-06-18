@@ -65,14 +65,16 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 ### UI Components (`components/`)
 
 #### TeamPaymentApprovalTool
+
 - **Purpose**: Main container orchestrating the entire workflow
 - **State**: Current view (list/reviewing/loading/error/success)
 - **Props**: `payments`, `onApprove`, `onReject`, `isLoading`, `error`
 - **Responsibility**: Managing view transitions, handling focus management
 
 #### PaymentApprovalList
+
 - **Purpose**: Display sortable list of pending payments
-- **Features**: 
+- **Features**:
   - Keyboard navigation (arrow keys)
   - Row selection with visual feedback
   - Sortable columns
@@ -80,6 +82,7 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 - **Accessibility**: ARIA table semantics, keyboard support
 
 #### PaymentApprovalForm
+
 - **Purpose**: Display payment details and capture approval decision
 - **Features**:
   - Payment details display
@@ -90,6 +93,7 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 - **Accessibility**: Proper label associations, fieldset for grouping, keyboard support
 
 #### State Components
+
 - **EmptyState**: No payments to review
 - **LoadingState**: Fetching data (aria-live="polite" for updates)
 - **ErrorState**: Error occurred (role="alert" for immediate announcement)
@@ -98,6 +102,7 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 ### Custom Hooks (`hooks/`)
 
 #### usePaymentApproval
+
 - **Purpose**: Manage approval workflow state
 - **Methods**:
   - `approve(paymentId, notes)`: Record approval decision
@@ -107,6 +112,7 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 - **State**: `isLoading`, `error`, `decisions`
 
 #### usePaymentRequests
+
 - **Purpose**: Fetch and manage payment data
 - **Methods**:
   - `fetch()`: Fetch data from provided callback
@@ -118,6 +124,7 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 ### Services (`services/`)
 
 #### PaymentService
+
 - **Singleton**: Single instance across application
 - **Methods**:
   - `addPayment()`: Store payment request
@@ -129,6 +136,7 @@ The Team Payment Approval tool is a **self-contained, isolated tool** for review
 - **Storage**: In-memory Map
 
 #### DecisionService
+
 - **Singleton**: Two instances available
   - `decisionService`: In-memory only
   - `persistentDecisionService`: With localStorage
@@ -153,8 +161,8 @@ interface PaymentRequest {
   requestedBy: string;
   requestedAt: Date;
   deadline?: Date;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  priority: "low" | "normal" | "high" | "urgent";
+  status: "pending" | "approved" | "rejected" | "expired";
   notes?: string;
 }
 
@@ -162,7 +170,7 @@ interface PaymentRequest {
 interface ApprovalDecision {
   approverId: string;
   paymentId: string;
-  decision: 'approve' | 'reject';
+  decision: "approve" | "reject";
   notes?: string;
   decidedAt: Date;
 }
@@ -171,7 +179,7 @@ interface ApprovalDecision {
 interface ApprovalWorkflow {
   id: string;
   paymentId: string;
-  status: 'pending' | 'completed' | 'escalated';
+  status: "pending" | "completed" | "escalated";
   requiredApprovals: number;
   approvals: ApprovalDecision[];
   rejections: ApprovalDecision[];
@@ -215,6 +223,7 @@ interface ApprovalWorkflow {
 ## Accessibility Architecture
 
 ### Keyboard Navigation
+
 - **Tab**: Move between interactive elements
 - **Shift+Tab**: Move backward
 - **Arrow Keys**: Navigate list rows
@@ -222,17 +231,20 @@ interface ApprovalWorkflow {
 - **Escape**: Cancel operations
 
 Implementation through:
+
 - Native HTML form controls (button, input, textarea)
 - OnKeyDown handlers for custom navigation
 - Ref management for focus control
 
 ### Screen Reader Support
+
 - **Semantic HTML**: form, fieldset, legend, table, thead, tbody
 - **ARIA Labels**: aria-label, aria-labelledby, aria-describedby
 - **Live Regions**: role="status" with aria-live="polite"/"assertive"
 - **Status Indicators**: role="alert" for errors
 
 ### Visual Accessibility
+
 - **Focus Indicators**: Visible ring with offset
 - **Color Contrast**: WCAG AA minimum (4.5:1)
 - **Reduced Motion**: Respects prefers-reduced-motion
@@ -240,11 +252,13 @@ Implementation through:
 ## Styling Strategy
 
 ### Design System Integration
+
 - Uses existing design system tokens (colors, spacing, typography)
 - Tailwind CSS for component styling
 - No modifications to shared design system
 
 ### Component Styles
+
 - Status badges with semantic colors
 - Priority indicators with color + text
 - Form fields with accessible styling
@@ -252,6 +266,7 @@ Implementation through:
 - Dark mode support with dark: prefix
 
 ### Responsive Design
+
 - Mobile-first approach
 - Tablet breakpoints (md: 768px)
 - Desktop layout (lg: 1024px)
@@ -260,16 +275,19 @@ Implementation through:
 ## State Management Pattern
 
 ### Local State
+
 - Component-level state with useState
 - Hook-based state management (custom hooks)
 - No external state library required
 
 ### Service State
+
 - Singleton services for data
 - In-memory storage by default
 - Optional localStorage for persistence
 
 ### Flow
+
 ```
 User Action (onClick, onKeyDown)
     ↓
@@ -285,23 +303,27 @@ UI Update
 ## Testing Strategy
 
 ### Unit Tests
+
 - Component rendering
 - State changes
 - Event handling
 - Keyboard navigation
 
 ### Integration Tests
+
 - Full workflow (list → form → approval)
 - State persistence
 - Error handling
 
 ### Accessibility Tests
+
 - Keyboard navigation
 - Screen reader compatibility
 - Color contrast
 - Focus management
 
 ### Test Fixtures
+
 - Mock payment data in `fixtures/`
 - Various priority and status combinations
 - Realistic names and amounts
@@ -309,6 +331,7 @@ UI Update
 ## Boundary Conditions
 
 ### What's Inside This Tool
+
 ✅ UI components for payment review
 ✅ Local data services
 ✅ State management hooks
@@ -317,6 +340,7 @@ UI Update
 ✅ Documentation
 
 ### What's NOT Inside This Tool
+
 ❌ Main app routing
 ❌ Authentication system
 ❌ Wallet integration
@@ -328,6 +352,7 @@ UI Update
 ## Extension Points
 
 For future integration, external code can:
+
 - Provide custom payment data via props
 - Implement approval/rejection callbacks
 - Add filtering or sorting logic
@@ -335,6 +360,7 @@ For future integration, external code can:
 - Additional state management
 
 But CANNOT:
+
 - Modify shared design system
 - Wire into main app routing
 - Access wallet or Stellar core
@@ -344,12 +370,14 @@ But CANNOT:
 ## Performance Considerations
 
 ### Optimization
+
 - Memoization of components (React.memo if needed)
 - Efficient re-renders with proper key usage
 - Lazy loading of large lists (if needed)
 - Service singletons prevent duplicate data
 
 ### Limitations
+
 - In-memory storage limited by browser memory
 - localStorage limited to ~5-10MB
 - No server-side pagination or filtering
@@ -358,17 +386,20 @@ But CANNOT:
 ## Security Considerations
 
 ### What's NOT a Security Concern
+
 - This is a local demo/testing tool
 - No real payment processing
 - No real credentials or tokens
 - No database access
 
 ### Input Validation
+
 - Form validation for required fields
 - Type checking with TypeScript
 - Notes field sanitized before display
 
 ### Future Considerations
+
 - When integrated with real API, add authentication
 - Validate permissions server-side
 - Audit log all approval decisions
@@ -377,11 +408,13 @@ But CANNOT:
 ## Future Enhancements
 
 Phase 2 (Testing & Documentation):
+
 - Unit tests with Vitest
 - E2E tests with Playwright
 - Expanded documentation
 
 Phase 3 (Integration):
+
 - Route integration with main app
 - Authentication connection
 - Real API integration

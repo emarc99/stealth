@@ -67,6 +67,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 ### 2. ✅ Keyboard & Screen Reader Support Built In
 
 **Keyboard Navigation**:
+
 - ✅ Tab/Shift+Tab between elements
 - ✅ Arrow Up/Down in payment list
 - ✅ Enter/Space to select and activate
@@ -75,6 +76,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 - ✅ All documented in sr-only region and ACCESSIBILITY.md
 
 **Screen Reader Support**:
+
 - ✅ Semantic HTML: form, fieldset, legend, table, thead, tbody
 - ✅ ARIA labels: aria-label, aria-labelledby, aria-describedby
 - ✅ Live regions: role="status" aria-live="polite"/"assertive"
@@ -86,6 +88,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 - ✅ Focus management: Logical tab order throughout
 
 **Visual Accessibility**:
+
 - ✅ Focus indicators: Ring with offset on all interactive elements
 - ✅ Color contrast: WCAG AA (4.5:1 normal, 3:1 large text)
 - ✅ Color usage: Information conveyed beyond color alone
@@ -94,14 +97,14 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 
 ### 3. ✅ All Required UI States
 
-| State | File | Component | Features |
-|-------|------|-----------|----------|
-| Empty | `empty-state.tsx` | EmptyState | Icon, title, description, action |
-| Loading | `loading-state.tsx` | LoadingState | Skeleton animation, aria-busy |
-| Error | `error-state.tsx` | ErrorState | Alert role, details, retry action |
-| Success | `success-state.tsx` | SuccessState | Confirmation, auto-redirect |
-| List | `payment-approval-list.tsx` | PaymentApprovalList | Browse, sort, select, filter |
-| Review | `payment-approval-form.tsx` | PaymentApprovalForm | Details, decision, notes, submit |
+| State   | File                        | Component           | Features                          |
+| ------- | --------------------------- | ------------------- | --------------------------------- |
+| Empty   | `empty-state.tsx`           | EmptyState          | Icon, title, description, action  |
+| Loading | `loading-state.tsx`         | LoadingState        | Skeleton animation, aria-busy     |
+| Error   | `error-state.tsx`           | ErrorState          | Alert role, details, retry action |
+| Success | `success-state.tsx`         | SuccessState        | Confirmation, auto-redirect       |
+| List    | `payment-approval-list.tsx` | PaymentApprovalList | Browse, sort, select, filter      |
+| Review  | `payment-approval-form.tsx` | PaymentApprovalForm | Details, decision, notes, submit  |
 
 ### 4. ✅ Custom Hooks for State Management
 
@@ -159,6 +162,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 **File**: `docs/`
 
 #### ACCESSIBILITY.md
+
 - ✅ Complete keyboard navigation guide
 - ✅ Screen reader testing guide (NVDA, VoiceOver, Orca)
 - ✅ Keyboard shortcut reference
@@ -168,6 +172,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 - ✅ Resources and links
 
 #### VISUAL_STYLE.md
+
 - ✅ Design principles (isolation, consistency, clarity)
 - ✅ Color system for status badges and priorities
 - ✅ Typography hierarchy
@@ -181,6 +186,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 - ✅ What NOT to change (shared design system)
 
 #### GETTING_STARTED.md
+
 - ✅ Installation instructions
 - ✅ Basic usage examples
 - ✅ Component usage patterns
@@ -192,6 +198,7 @@ All work is isolated to `tools/v2/team/team-payment-approval/` and ready for iso
 - ✅ Troubleshooting guide
 
 #### ARCHITECTURE.md
+
 - ✅ System overview with architecture diagram
 - ✅ Component structure details
 - ✅ Hook patterns
@@ -322,7 +329,9 @@ tools/v2/team/team-payment-approval/
 ## Accessibility Highlights
 
 ### Keyboard Navigation
+
 ✅ **Full keyboard support** - No mouse required
+
 - Tab through all interactive elements
 - Arrow keys in list view
 - Escape to cancel operations
@@ -330,7 +339,9 @@ tools/v2/team/team-payment-approval/
 - Ctrl+Enter to quick-submit
 
 ### Screen Reader Compatible
+
 ✅ **ARIA & semantic HTML** - Works with NVDA, VoiceOver, Orca
+
 - Proper form structure with fieldset/legend
 - Labels associated with form fields
 - Live regions announce loading, errors, success
@@ -338,7 +349,9 @@ tools/v2/team/team-payment-approval/
 - Status descriptions beyond color
 
 ### Visual Accessibility
+
 ✅ **WCAG AA compliant**
+
 - Clear focus indicators (visible rings)
 - 4.5:1 contrast ratio on normal text
 - Information conveyed beyond color
@@ -346,7 +359,9 @@ tools/v2/team/team-payment-approval/
 - Full dark mode support
 
 ### Testing
+
 ✅ **Ready for accessibility validation**
+
 - See ACCESSIBILITY.md for testing guide
 - Chrome + ChromeVox
 - Firefox + NVDA
@@ -373,6 +388,7 @@ These will be handled by **separate follow-up issues** after this UI work is val
 ## Next Steps
 
 ### Immediate
+
 1. Review isolated components for accessibility
 2. Test keyboard navigation (all shortcuts in ACCESSIBILITY.md)
 3. Test with screen reader (NVDA, VoiceOver, or Orca)
@@ -380,11 +396,13 @@ These will be handled by **separate follow-up issues** after this UI work is val
 5. Check dark mode rendering
 
 ### Phase 2 (Future Issue)
+
 1. Add unit tests with Vitest
 2. Add E2E tests with Playwright
 3. Expand documentation as needed
 
 ### Phase 3 (Future Issue)
+
 1. Create separate "Integration" issue
 2. Connect to main app routing
 3. Wire authentication

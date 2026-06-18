@@ -3,9 +3,9 @@ import type { PaymentRequest } from "../types";
 
 /**
  * PaymentApprovalList Component
- * 
+ *
  * Accessible list of payment requests to review.
- * 
+ *
  * Accessibility features:
  * - Semantic table structure with proper headers
  * - Sortable columns with aria-sort indicating current sort state
@@ -28,7 +28,10 @@ interface PaymentApprovalListProps {
 
 const STATUS_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
   pending: { bg: "bg-yellow-100 dark:bg-yellow-900", text: "text-yellow-800 dark:text-yellow-100" },
-  approved: { bg: "bg-emerald-100 dark:bg-emerald-900", text: "text-emerald-800 dark:text-emerald-100" },
+  approved: {
+    bg: "bg-emerald-100 dark:bg-emerald-900",
+    text: "text-emerald-800 dark:text-emerald-100",
+  },
   rejected: { bg: "bg-destructive/10", text: "text-destructive" },
   expired: { bg: "bg-gray-100 dark:bg-gray-900", text: "text-gray-800 dark:text-gray-100" },
 };
@@ -56,7 +59,9 @@ export function PaymentApprovalList({
       const rows = tableRef.current?.querySelectorAll("tbody tr");
       if (!rows) return;
 
-      const currentIndex = Array.from(rows).findIndex((row) => row.dataset.paymentId === payment.id);
+      const currentIndex = Array.from(rows).findIndex(
+        (row) => row.dataset.paymentId === payment.id,
+      );
 
       switch (e.key) {
         case "ArrowDown":
@@ -90,7 +95,7 @@ export function PaymentApprovalList({
           break;
       }
     },
-    [payments, onSelectPayment]
+    [payments, onSelectPayment],
   );
 
   const handleSortClick = (newSort: "date" | "amount" | "priority") => {

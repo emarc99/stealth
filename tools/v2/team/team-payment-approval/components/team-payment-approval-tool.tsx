@@ -11,17 +11,17 @@ import {
 
 /**
  * TeamPaymentApprovalTool
- * 
+ *
  * Main container component for the Team Payment Approval tool.
  * This is a self-contained, locally-scoped workflow for reviewing and approving payments.
- * 
+ *
  * States:
  * - idle: Showing payment list
  * - reviewing: Showing payment form
  * - loading: Loading data
  * - error: Error state
  * - success: Success confirmation
- * 
+ *
  * Accessibility:
  * - Focus management between list and form
  * - Keyboard shortcuts documented
@@ -97,7 +97,7 @@ export function TeamPaymentApprovalTool({
         setViewState("error");
       }
     },
-    [selectedPayment, onApprove]
+    [selectedPayment, onApprove],
   );
 
   const handleReject = useCallback(
@@ -119,7 +119,7 @@ export function TeamPaymentApprovalTool({
         setViewState("error");
       }
     },
-    [selectedPayment, onReject]
+    [selectedPayment, onReject],
   );
 
   const handleCancel = useCallback(() => {
@@ -139,12 +139,13 @@ export function TeamPaymentApprovalTool({
     switch (sortBy) {
       case "amount":
         return b.amount - a.amount;
-      case "priority":
+      case "priority": {
         const priorityOrder = { urgent: 0, high: 1, normal: 2, low: 3 };
         return (
           priorityOrder[a.priority as keyof typeof priorityOrder] -
           priorityOrder[b.priority as keyof typeof priorityOrder]
         );
+      }
       case "date":
       default:
         return new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime();
@@ -201,9 +202,7 @@ export function TeamPaymentApprovalTool({
         {viewState === "list" && sortedPayments.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">
-                Pending Approvals ({sortedPayments.length})
-              </h2>
+              <h2 className="text-lg font-semibold">Pending Approvals ({sortedPayments.length})</h2>
               <span className="text-sm text-muted-foreground">
                 {approvedPayments.size} approved this session
               </span>
@@ -240,7 +239,9 @@ export function TeamPaymentApprovalTool({
         {viewState === "success" && selectedPayment && (
           <SuccessState
             icon="✅"
-            title={approvedPayments.has(selectedPayment.id) ? "Payment Approved" : "Payment Rejected"}
+            title={
+              approvedPayments.has(selectedPayment.id) ? "Payment Approved" : "Payment Rejected"
+            }
             details={
               approvedPayments.has(selectedPayment.id)
                 ? `Successfully approved ${selectedPayment.amount} ${selectedPayment.currency} to ${selectedPayment.recipient}. Redirecting to payment list...`
@@ -251,12 +252,7 @@ export function TeamPaymentApprovalTool({
       </main>
 
       {/* Accessibility Announcements Region */}
-      <div
-        role="region"
-        aria-live="polite"
-        aria-label="Status messages"
-        className="sr-only"
-      />
+      <div role="region" aria-live="polite" aria-label="Status messages" className="sr-only" />
     </div>
   );
 }

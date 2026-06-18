@@ -194,6 +194,7 @@ glass-tile mb-6 flex size-14 items-center justify-center rounded-2xl
 ```
 
 Colors for icons:
+
 - Empty: text-foreground
 - Loading: text-foreground (skeleton)
 - Error: text-destructive

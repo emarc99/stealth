@@ -1,6 +1,6 @@
 /**
  * Local Decision Service
- * 
+ *
  * Handles recording and managing approval decisions locally.
  * Decisions are stored in memory and can be persisted to localStorage if needed.
  */

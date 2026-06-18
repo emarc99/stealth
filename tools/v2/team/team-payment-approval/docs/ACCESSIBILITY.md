@@ -85,6 +85,7 @@ The Team Payment Approval tool is built with accessibility as a core feature, no
 ### Screen Reader Testing
 
 Test with:
+
 - **macOS/iOS**: VoiceOver (built-in, ⌘F5)
 - **Windows**: NVDA (free, [nvaccess.org](https://www.nvaccess.org/))
 - **Windows**: JAWS (commercial)

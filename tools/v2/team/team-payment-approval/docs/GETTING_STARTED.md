@@ -13,8 +13,8 @@ The tool is already part of the codebase at `tools/v2/team/team-payment-approval
 The simplest way to use the tool is with the `TeamPaymentApprovalTool` component:
 
 ```tsx
-import { TeamPaymentApprovalTool } from '@/tools/v2/team/team-payment-approval';
-import { mockPayments } from '@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures';
+import { TeamPaymentApprovalTool } from "@/tools/v2/team/team-payment-approval";
+import { mockPayments } from "@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures";
 
 export function PaymentApprovalPage() {
   return (
@@ -45,9 +45,9 @@ import {
   PaymentApprovalForm,
   EmptyState,
   LoadingState,
-} from '@/tools/v2/team/team-payment-approval/components';
-import { mockPayments } from '@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures';
-import { useState } from 'react';
+} from "@/tools/v2/team/team-payment-approval/components";
+import { mockPayments } from "@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures";
+import { useState } from "react";
 
 export function CustomApprovalPage() {
   const [selected, setSelected] = useState(null);
@@ -83,12 +83,7 @@ export function CustomApprovalPage() {
     );
   }
 
-  return (
-    <PaymentApprovalList
-      payments={mockPayments}
-      onSelectPayment={setSelected}
-    />
-  );
+  return <PaymentApprovalList payments={mockPayments} onSelectPayment={setSelected} />;
 }
 ```
 
@@ -101,23 +96,17 @@ For advanced state management, use the provided hooks:
 Manage fetching and filtering payments:
 
 ```tsx
-import { usePaymentRequests } from '@/tools/v2/team/team-payment-approval/hooks';
-import { mockPayments } from '@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures';
+import { usePaymentRequests } from "@/tools/v2/team/team-payment-approval/hooks";
+import { mockPayments } from "@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures";
 
 function MyComponent() {
-  const {
-    payments,
-    isLoading,
-    error,
-    filterByStatus,
-    filterByPriority,
-    refresh,
-  } = usePaymentRequests({
-    initialPayments: mockPayments,
-  });
+  const { payments, isLoading, error, filterByStatus, filterByPriority, refresh } =
+    usePaymentRequests({
+      initialPayments: mockPayments,
+    });
 
-  const urgentPayments = filterByPriority('urgent');
-  const pendingPayments = filterByStatus('pending');
+  const urgentPayments = filterByPriority("urgent");
+  const pendingPayments = filterByStatus("pending");
 
   return (
     <div>
@@ -133,17 +122,10 @@ function MyComponent() {
 Manage approval decisions:
 
 ```tsx
-import { usePaymentApproval } from '@/tools/v2/team/team-payment-approval/hooks';
+import { usePaymentApproval } from "@/tools/v2/team/team-payment-approval/hooks";
 
 function ApprovalForm({ paymentId }) {
-  const {
-    isLoading,
-    error,
-    approve,
-    reject,
-    getDecision,
-    clearError,
-  } = usePaymentApproval({
+  const { isLoading, error, approve, reject, getDecision, clearError } = usePaymentApproval({
     onApprove: async (paymentId, notes) => {
       // Handle approval
       console.log(`Approved ${paymentId}`);
@@ -157,7 +139,7 @@ function ApprovalForm({ paymentId }) {
       onSubmit={async (e) => {
         e.preventDefault();
         try {
-          await approve(paymentId, 'My notes');
+          await approve(paymentId, "My notes");
         } catch (err) {
           // Error handled by hook
         }
@@ -171,7 +153,7 @@ function ApprovalForm({ paymentId }) {
       )}
       {decision && <p>Already decided: {decision.decision}</p>}
       <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Processing...' : 'Approve'}
+        {isLoading ? "Processing..." : "Approve"}
       </button>
     </form>
   );
@@ -183,30 +165,30 @@ function ApprovalForm({ paymentId }) {
 For direct data management:
 
 ```tsx
-import { paymentService, decisionService } from '@/tools/v2/team/team-payment-approval/services';
-import { mockPayments } from '@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures';
+import { paymentService, decisionService } from "@/tools/v2/team/team-payment-approval/services";
+import { mockPayments } from "@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures";
 
 // Initialize with mock data
-mockPayments.forEach(p => paymentService.addPayment(p));
+mockPayments.forEach((p) => paymentService.addPayment(p));
 
 // Get pending payments
 const pending = paymentService.getPendingPayments();
 
 // Record a decision
 decisionService.recordDecision({
-  approverId: 'user-123',
-  paymentId: 'payment-1',
-  decision: 'approve',
-  notes: 'Looks good',
+  approverId: "user-123",
+  paymentId: "payment-1",
+  decision: "approve",
+  notes: "Looks good",
   decidedAt: new Date(),
 });
 
 // Check decision stats
-console.log('Approvals:', decisionService.getApprovalCount());
-console.log('Rejections:', decisionService.getRejectionCount());
+console.log("Approvals:", decisionService.getApprovalCount());
+console.log("Rejections:", decisionService.getRejectionCount());
 
 // Update payment status
-paymentService.updatePaymentStatus('payment-1', 'approved');
+paymentService.updatePaymentStatus("payment-1", "approved");
 ```
 
 ## Testing
@@ -214,13 +196,13 @@ paymentService.updatePaymentStatus('payment-1', 'approved');
 ### Unit Testing Example
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { PaymentApprovalForm } from '@/tools/v2/team/team-payment-approval/components';
-import { mockPayments } from '@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { PaymentApprovalForm } from "@/tools/v2/team/team-payment-approval/components";
+import { mockPayments } from "@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures";
 
-describe('PaymentApprovalForm', () => {
-  it('should approve a payment with notes', async () => {
+describe("PaymentApprovalForm", () => {
+  it("should approve a payment with notes", async () => {
     const handleApprove = jest.fn();
     const payment = mockPayments[0];
 
@@ -230,7 +212,7 @@ describe('PaymentApprovalForm', () => {
         onApprove={handleApprove}
         onReject={() => {}}
         onCancel={() => {}}
-      />
+      />,
     );
 
     // Select approve
@@ -239,13 +221,13 @@ describe('PaymentApprovalForm', () => {
 
     // Add notes
     const notesField = screen.getByPlaceholderText(/comments/i);
-    await userEvent.type(notesField, 'Approved by manager');
+    await userEvent.type(notesField, "Approved by manager");
 
     // Submit
-    const submitButton = screen.getByRole('button', { name: /confirm/i });
+    const submitButton = screen.getByRole("button", { name: /confirm/i });
     await userEvent.click(submitButton);
 
-    expect(handleApprove).toHaveBeenCalledWith('Approved by manager');
+    expect(handleApprove).toHaveBeenCalledWith("Approved by manager");
   });
 });
 ```
@@ -253,51 +235,43 @@ describe('PaymentApprovalForm', () => {
 ### Accessibility Testing
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { PaymentApprovalTool } from '@/tools/v2/team/team-payment-approval';
-import { mockPayments } from '@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { PaymentApprovalTool } from "@/tools/v2/team/team-payment-approval";
+import { mockPayments } from "@/tools/v2/team/team-payment-approval/fixtures/payments.fixtures";
 
-describe('Accessibility', () => {
-  it('should be keyboard navigable', async () => {
+describe("Accessibility", () => {
+  it("should be keyboard navigable", async () => {
     render(
-      <PaymentApprovalTool
-        payments={mockPayments}
-        onApprove={jest.fn()}
-        onReject={jest.fn()}
-      />
+      <PaymentApprovalTool payments={mockPayments} onApprove={jest.fn()} onReject={jest.fn()} />,
     );
 
     // Tab to first payment
     await userEvent.tab();
-    expect(screen.getByRole('row', { selected: true })).toBeInTheDocument();
+    expect(screen.getByRole("row", { selected: true })).toBeInTheDocument();
 
     // Arrow down to next payment
-    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard("{ArrowDown}");
     // Focus should move to next row
 
     // Enter to select
-    await userEvent.keyboard('{Enter}');
+    await userEvent.keyboard("{Enter}");
     // Form should appear
-    expect(screen.getByRole('form')).toBeInTheDocument();
+    expect(screen.getByRole("form")).toBeInTheDocument();
 
     // Escape to cancel
-    await userEvent.keyboard('{Escape}');
+    await userEvent.keyboard("{Escape}");
     // Should return to list
   });
 
-  it('should work with screen readers', () => {
+  it("should work with screen readers", () => {
     render(
-      <PaymentApprovalTool
-        payments={mockPayments}
-        onApprove={jest.fn()}
-        onReject={jest.fn()}
-      />
+      <PaymentApprovalTool payments={mockPayments} onApprove={jest.fn()} onReject={jest.fn()} />,
     );
 
     // Check ARIA labels
     expect(screen.getByLabelText(/payment approval requests/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /review payment/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /review payment/i })).toBeInTheDocument();
   });
 });
 ```
@@ -328,8 +302,8 @@ interface PaymentRequest {
   requestedBy: string;
   requestedAt: Date;
   deadline?: Date;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  priority: "low" | "normal" | "high" | "urgent";
+  status: "pending" | "approved" | "rejected" | "expired";
   notes?: string;
 }
 ```
@@ -340,7 +314,7 @@ interface PaymentRequest {
 interface ApprovalDecision {
   approverId: string;
   paymentId: string;
-  decision: 'approve' | 'reject';
+  decision: "approve" | "reject";
   notes?: string;
   decidedAt: Date;
 }
@@ -365,10 +339,10 @@ Make sure you've imported from the correct path:
 
 ```tsx
 // ✅ Correct
-import { TeamPaymentApprovalTool } from '@/tools/v2/team/team-payment-approval';
+import { TeamPaymentApprovalTool } from "@/tools/v2/team/team-payment-approval";
 
 // ❌ Wrong
-import { TeamPaymentApprovalTool } from '@/features/team-payment-approval';
+import { TeamPaymentApprovalTool } from "@/features/team-payment-approval";
 ```
 
 ### Styles not applied

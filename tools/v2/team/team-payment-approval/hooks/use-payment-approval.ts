@@ -3,7 +3,7 @@ import type { PaymentRequest, ApprovalDecision } from "../types";
 
 /**
  * usePaymentApproval Hook
- * 
+ *
  * Manages the state of payment approval workflow locally.
  * Handles approval decisions, notes, and state transitions.
  */
@@ -44,7 +44,7 @@ export function usePaymentApproval(options: UsePaymentApprovalOptions = {}) {
         setIsLoading(false);
       }
     },
-    [options]
+    [options],
   );
 
   const reject = useCallback(
@@ -74,13 +74,10 @@ export function usePaymentApproval(options: UsePaymentApprovalOptions = {}) {
         setIsLoading(false);
       }
     },
-    [options]
+    [options],
   );
 
-  const getDecision = useCallback(
-    (paymentId: string) => decisions.get(paymentId),
-    [decisions]
-  );
+  const getDecision = useCallback((paymentId: string) => decisions.get(paymentId), [decisions]);
 
   const clearError = useCallback(() => setError(null), []);
 

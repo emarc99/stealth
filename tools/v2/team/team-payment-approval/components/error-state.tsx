@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 
 /**
  * ErrorState Component
- * 
+ *
  * Accessible error state for payment approval failures.
- * 
+ *
  * Accessibility features:
  * - role="alert" announces errors immediately to screen readers
  * - aria-label provides context
@@ -19,13 +19,7 @@ interface ErrorStateProps {
   title: string;
 }
 
-export function ErrorState({
-  action,
-  className,
-  details,
-  icon,
-  title,
-}: ErrorStateProps) {
+export function ErrorState({ action, className, details, icon, title }: ErrorStateProps) {
   return (
     <div
       role="alert"
@@ -41,9 +35,7 @@ export function ErrorState({
         </div>
       ) : null}
       <h2 className="text-2xl font-semibold text-destructive">{title}</h2>
-      {details ? (
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{details}</p>
-      ) : null}
+      {details ? <p className="mt-3 text-sm leading-6 text-muted-foreground">{details}</p> : null}
       {action ? <div className="mt-7">{action}</div> : null}
     </div>
   );

@@ -2,7 +2,7 @@ import type { PaymentRequest, ApprovalDecision, ApprovalWorkflow } from "../type
 
 /**
  * Local Payment Service
- * 
+ *
  * Handles local payment data operations for the tool.
  * Do not wire this into the main wallet or Stellar integration.
  */

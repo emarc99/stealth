@@ -3,9 +3,9 @@ import type { PaymentRequest } from "../types";
 
 /**
  * PaymentApprovalForm Component
- * 
+ *
  * Accessible form for approving or rejecting payment requests.
- * 
+ *
  * Accessibility features:
  * - Proper label association with form fields using htmlFor
  * - Required field indicators with aria-required
@@ -41,45 +41,48 @@ export function PaymentApprovalForm({
   const notesRef = useRef<HTMLTextAreaElement>(null);
   const decisionErrorRef = useRef<HTMLDivElement>(null);
 
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      if (!decision) {
+        setError("Please select an approval decision");
+        decisionErrorRef.current?.focus();
+        return;
+      }
+
+      setError(null);
+      setIsSubmitting(true);
+
+      try {
+        if (decision === "approve") {
+          await onApprove(notes);
+        } else {
+          await onReject(notes);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        decisionErrorRef.current?.focus();
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [decision, notes, onApprove, onReject],
+  );
+
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: React.KeyboardEvent<HTMLFormElement>) => {
       // Escape to cancel
       if (e.key === "Escape" && !isSubmitting) {
         onCancel();
       }
       // Ctrl/Cmd + Enter to submit
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && decision && !isSubmitting) {
-        handleSubmit(e as any);
+        formRef.current?.requestSubmit();
       }
     },
-    [decision, isSubmitting, onCancel]
+    [decision, isSubmitting, onCancel],
   );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!decision) {
-      setError("Please select an approval decision");
-      decisionErrorRef.current?.focus();
-      return;
-    }
-
-    setError(null);
-    setIsSubmitting(true);
-
-    try {
-      if (decision === "approve") {
-        await onApprove(notes);
-      } else {
-        await onReject(notes);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      decisionErrorRef.current?.focus();
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <form
@@ -132,7 +135,10 @@ export function PaymentApprovalForm({
       {/* Decision Selection */}
       <fieldset className="space-y-3">
         <legend className="text-base font-semibold">
-          Your Decision <span aria-label="required" className="text-destructive">*</span>
+          Your Decision{" "}
+          <span aria-label="required" className="text-destructive">
+            *
+          </span>
         </legend>
         <div
           ref={decisionErrorRef}
@@ -191,10 +197,7 @@ export function PaymentApprovalForm({
 
       {/* Notes Field */}
       <div className="space-y-2">
-        <label
-          htmlFor="approval-notes"
-          className="block text-sm font-medium"
-        >
+        <label htmlFor="approval-notes" className="block text-sm font-medium">
           Approval Notes {decision && <span className="text-muted-foreground">(optional)</span>}
         </label>
         <textarea
@@ -208,7 +211,9 @@ export function PaymentApprovalForm({
           aria-describedby="notes-help"
         />
         <p id="notes-help" className="text-xs text-muted-foreground">
-          {decision ? "Your notes will be included with this decision" : "Select a decision above to add notes"}
+          {decision
+            ? "Your notes will be included with this decision"
+            : "Select a decision above to add notes"}
         </p>
       </div>
 
@@ -230,15 +235,15 @@ export function PaymentApprovalForm({
             decision === "approve"
               ? "bg-emerald-600 hover:bg-emerald-700"
               : decision === "reject"
-              ? "bg-destructive hover:bg-destructive/90"
-              : "bg-muted cursor-not-allowed"
+                ? "bg-destructive hover:bg-destructive/90"
+                : "bg-muted cursor-not-allowed"
           }`}
           aria-label={
             decision === "approve"
               ? `Confirm approval of ${payment.amount} ${payment.currency}`
               : decision === "reject"
-              ? `Confirm rejection of ${payment.amount} ${payment.currency}`
-              : "Select a decision to continue"
+                ? `Confirm rejection of ${payment.amount} ${payment.currency}`
+                : "Select a decision to continue"
           }
         >
           {isSubmitting ? "Processing..." : "Confirm Decision"}

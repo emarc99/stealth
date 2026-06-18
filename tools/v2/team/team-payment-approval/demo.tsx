@@ -1,9 +1,9 @@
 /**
  * Team Payment Approval Tool - Demo & Testing Setup
- * 
+ *
  * This file demonstrates how to use the Team Payment Approval tool
  * in a demo or testing environment.
- * 
+ *
  * For production integration, see README.md and docs/
  */
 
@@ -25,9 +25,7 @@ export function TeamPaymentApprovalDemo() {
 
       // Update local state
       setPayments((prev) =>
-        prev.map((p) =>
-          p.id === paymentId ? { ...p, status: "approved" as const } : p
-        )
+        prev.map((p) => (p.id === paymentId ? { ...p, status: "approved" as const } : p)),
       );
     },
     onReject: async (paymentId) => {
@@ -37,9 +35,7 @@ export function TeamPaymentApprovalDemo() {
 
       // Update local state
       setPayments((prev) =>
-        prev.map((p) =>
-          p.id === paymentId ? { ...p, status: "rejected" as const } : p
-        )
+        prev.map((p) => (p.id === paymentId ? { ...p, status: "rejected" as const } : p)),
       );
     },
   });

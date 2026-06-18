@@ -7,6 +7,7 @@ A self-contained team tool for reviewing and approving payment requests with **a
 ✅ All work for this tool stays inside: `tools/v2/team/team-payment-approval/`
 
 ❌ Do NOT modify:
+
 - Main app shell, dashboard, or routing
 - Authentication, wallet core, or Stellar integration
 - Database schema or API contracts
@@ -81,8 +82,8 @@ See [docs/VISUAL_STYLE.md](docs/VISUAL_STYLE.md) for component styling reference
 ### Using the Tool
 
 ```tsx
-import { TeamPaymentApprovalTool } from './components/team-payment-approval-tool';
-import { mockPayments } from './fixtures/payments.fixtures';
+import { TeamPaymentApprovalTool } from "./components/team-payment-approval-tool";
+import { mockPayments } from "./fixtures/payments.fixtures";
 
 export function PaymentApprovalPage() {
   return (
@@ -90,11 +91,11 @@ export function PaymentApprovalPage() {
       payments={mockPayments}
       onApprove={async (paymentId, notes) => {
         // Local logic - no main app wiring
-        console.log('Approved:', paymentId, notes);
+        console.log("Approved:", paymentId, notes);
       }}
       onReject={async (paymentId, notes) => {
         // Local logic - no main app wiring
-        console.log('Rejected:', paymentId, notes);
+        console.log("Rejected:", paymentId, notes);
       }}
     />
   );
@@ -111,8 +112,8 @@ import {
   LoadingState,
   ErrorState,
   SuccessState,
-} from './components';
-import { mockPayments } from './fixtures/payments.fixtures';
+} from "./components";
+import { mockPayments } from "./fixtures/payments.fixtures";
 
 // Use individual components for custom workflows
 ```
@@ -120,7 +121,7 @@ import { mockPayments } from './fixtures/payments.fixtures';
 ### Using Hooks
 
 ```tsx
-import { usePaymentApproval, usePaymentRequests } from './hooks';
+import { usePaymentApproval, usePaymentRequests } from "./hooks";
 
 function MyComponent() {
   const { payments, isLoading, fetch } = usePaymentRequests({
@@ -140,23 +141,23 @@ function MyComponent() {
 ### Using Services
 
 ```tsx
-import { paymentService, decisionService } from './services';
-import { mockPayments } from './fixtures/payments.fixtures';
+import { paymentService, decisionService } from "./services";
+import { mockPayments } from "./fixtures/payments.fixtures";
 
 // Add payment to local service
-mockPayments.forEach(p => paymentService.addPayment(p));
+mockPayments.forEach((p) => paymentService.addPayment(p));
 
 // Record decision
 decisionService.recordDecision({
-  approverId: 'user-123',
-  paymentId: 'payment-1',
-  decision: 'approve',
-  notes: 'Approved by manager',
+  approverId: "user-123",
+  paymentId: "payment-1",
+  decision: "approve",
+  notes: "Approved by manager",
   decidedAt: new Date(),
 });
 
 // Query decisions
-const decision = decisionService.getDecision('payment-1');
+const decision = decisionService.getDecision("payment-1");
 ```
 
 ## Testing

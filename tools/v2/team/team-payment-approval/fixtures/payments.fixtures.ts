@@ -2,7 +2,7 @@ import type { PaymentRequest } from "../types";
 
 /**
  * Payment Request Fixtures
- * 
+ *
  * Local test data for the Team Payment Approval tool.
  * Use these in local testing, demo modes, and to verify accessibility.
  */

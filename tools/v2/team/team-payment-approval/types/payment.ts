@@ -1,6 +1,6 @@
 /**
  * Team Payment Approval Types
- * 
+ *
  * Local type definitions for the Team Payment Approval tool.
  * Do not wire these into the main app's wallet or Stellar integration.
  */

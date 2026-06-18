@@ -1,6 +1,6 @@
 /**
  * Team Payment Approval Tool - Main Export
- * 
+ *
  * Public API for the Team Payment Approval tool.
  * Only export what's needed for external use.
  */
@@ -29,10 +29,7 @@ export type {
 // Hooks
 export { usePaymentApproval, usePaymentRequests } from "./hooks";
 
-export type {
-  UsePaymentApprovalOptions,
-  UsePaymentRequestsOptions,
-} from "./hooks";
+export type { UsePaymentApprovalOptions, UsePaymentRequestsOptions } from "./hooks";
 
 // Services
 export { paymentService, decisionService, persistentDecisionService } from "./services";

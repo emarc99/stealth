@@ -1,8 +1,8 @@
 /**
  * LoadingState Component
- * 
+ *
  * Accessible loading state for payment approval requests.
- * 
+ *
  * Accessibility features:
  * - role="status" with aria-live="polite" for dynamic updates
  * - aria-busy="true" indicates loading in progress
@@ -14,14 +14,12 @@ interface LoadingStateProps {
   itemCount?: number;
 }
 
-export function LoadingState({ message = "Loading payment requests...", itemCount = 3 }: LoadingStateProps) {
+export function LoadingState({
+  message = "Loading payment requests...",
+  itemCount = 3,
+}: LoadingStateProps) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-      className="space-y-4 w-full"
-    >
+    <div role="status" aria-live="polite" aria-busy="true" className="space-y-4 w-full">
       <div className="sr-only">{message}</div>
       {Array.from({ length: itemCount }).map((_, i) => (
         <div

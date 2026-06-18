@@ -16,12 +16,14 @@ Provide team members with a dedicated, accessible interface for reviewing and ap
 All deliverables must include accessibility features:
 
 ### Keyboard Navigation
+
 - Full keyboard support: Tab, Shift+Tab, Arrow keys, Enter, Escape
 - All interactive elements accessible without mouse
 - Logical tab order matching visual flow
 - Keyboard shortcuts documented for power users
 
 ### Screen Reader Support
+
 - Semantic HTML structure (form, fieldset, legend, table)
 - Proper ARIA labels and descriptions
 - Live regions for status updates (loading, errors, success)
@@ -29,6 +31,7 @@ All deliverables must include accessibility features:
 - Status indicators conveyed beyond color
 
 ### Visual Accessibility
+
 - Clear, visible focus indicators
 - WCAG AA contrast ratios (4.5:1 normal, 3:1 large text)
 - Color not the only way to convey information
@@ -83,6 +86,7 @@ This tool operates independently:
 - ✅ In-memory or localStorage for decisions
 
 Does NOT depend on:
+
 - ❌ Main app routing
 - ❌ Authentication system
 - ❌ Wallet core
@@ -95,18 +99,21 @@ Does NOT depend on:
 Contributions to this tool should include one or more of these categories:
 
 ### 🏗️ Architecture
+
 - Folder structure and organization
 - Service design
 - Hook patterns
 - Type definitions
 
 ### ✨ Feature
+
 - New payment workflow
 - Filtering or sorting
 - Decision recording
 - State management
 
 ### 🎨 UI and Accessibility
+
 - Component implementation
 - Accessible keyboard navigation
 - Screen reader support
@@ -116,6 +123,7 @@ Contributions to this tool should include one or more of these categories:
 - Focus management
 
 ### 🔒 Security and Performance
+
 - Input validation
 - Data sanitization
 - Performance optimization
@@ -123,6 +131,7 @@ Contributions to this tool should include one or more of these categories:
 - Error handling
 
 ### 🧪 Testing and Documentation
+
 - Unit tests
 - Integration tests
 - E2E tests
@@ -151,6 +160,7 @@ Contributions to this tool should include one or more of these categories:
 Only files within `tools/v2/team/team-payment-approval/` should be modified:
 
 ✅ Do modify:
+
 - `components/`
 - `hooks/`
 - `services/`
@@ -163,6 +173,7 @@ Only files within `tools/v2/team/team-payment-approval/` should be modified:
 - styles.css (if added)
 
 ❌ Do NOT modify:
+
 - `src/` (main app code)
 - `src/features/design-system/`
 - `src/routes/`
@@ -191,16 +202,19 @@ When reviewing contributions:
 ## Next Steps
 
 ### Phase 1: UI Components ✅ (This Issue)
+
 - Folder-local components with accessibility
 - Empty, loading, error, success states
 - Keyboard and screen reader support
 
 ### Phase 2: Testing & Documentation (Future)
+
 - Unit tests
 - E2E tests with Playwright
 - Additional documentation
 
 ### Phase 3: Integration (Future)
+
 - Separate issue for main app routing
 - Separate issue for data persistence
 - Separate issue for authentication connection

@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 
 /**
  * SuccessState Component
- * 
+ *
  * Accessible success state confirming payment approval action.
- * 
+ *
  * Accessibility features:
  * - role="status" with aria-live="assertive" for immediate announcement
  * - Clear confirmation message for screen readers
@@ -19,13 +19,7 @@ interface SuccessStateProps {
   title: string;
 }
 
-export function SuccessState({
-  action,
-  className,
-  details,
-  icon,
-  title,
-}: SuccessStateProps) {
+export function SuccessState({ action, className, details, icon, title }: SuccessStateProps) {
   return (
     <div
       role="status"
@@ -42,9 +36,7 @@ export function SuccessState({
         </div>
       ) : null}
       <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
-      {details ? (
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{details}</p>
-      ) : null}
+      {details ? <p className="mt-3 text-sm leading-6 text-muted-foreground">{details}</p> : null}
       {action ? <div className="mt-7">{action}</div> : null}
     </div>
   );
