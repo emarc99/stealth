@@ -6,7 +6,7 @@
 
 const MAX_EMAIL_BODY_LENGTH = 2048;
 const MAX_SUBJECT_LENGTH = 255;
-const SAFE_FILENAME_REGEX = /^[a-zA-Z0-9_\-\.]+$/;
+const SAFE_FILENAME_REGEX = /^[a-zA-Z0-9_.-]+$/;
 
 /**
  * Truncates an email body to prevent performance degradation on large datasets.
