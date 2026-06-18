@@ -20,7 +20,8 @@ export type DashboardSection =
   | "overview"
   | "accounts"
   | "mail"
-  | "audit";
+  | "audit"
+  | "notes";
 
 /** Props passed to the dashboard shell. */
 export interface DemoAdminDashboardProps {

@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import {
   Activity,
   BarChart3,
+  FileText,
   LayoutDashboard,
   Mail,
   Shield,
@@ -22,6 +23,7 @@ const NAV_ITEMS: DashboardNavItem[] = [
   { id: "accounts", label: "Accounts", description: "Demo Stellar accounts and balances" },
   { id: "mail", label: "Mail", description: "Demo mail fixtures and delivery states" },
   { id: "audit", label: "Audit", description: "Demo protocol event log" },
+  { id: "notes", label: "Notes", description: "Internal campaign planning notes" },
 ];
 
 const OVERVIEW_STATS: StatCard[] = [
@@ -59,6 +61,7 @@ const SECTION_ICON: Record<DashboardSection, React.ElementType> = {
   accounts: Users,
   mail: Mail,
   audit: Activity,
+  notes: FileText,
 };
 
 // ─── Content region components ────────────────────────────────────────────────
@@ -193,11 +196,64 @@ function AuditContent() {
   );
 }
 
+const CAMPAIGN_NOTES_FAKE = [
+  {
+    id: "note-1",
+    title: "Campaign Data Isolation",
+    date: "2026-06-18",
+    content: "Ensure all new demo data is strictly isolated. **Fake addresses** and **synthetic balances** only.\n\n- No real network calls\n- No PII",
+  },
+  {
+    id: "note-2",
+    title: "Q3 Feature Rollout",
+    date: "2026-06-17",
+    content: "The new _Notes Panel_ should allow admin planning. Remember to keep the UI clean and aligned with the overarching dashboard aesthetic.",
+  },
+];
+
+function NotesContent() {
+  const renderMarkdownLite = (text: string) => {
+    // Basic bold and italic replacement, plus line breaks
+    const html = text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/_(.*?)_/g, "<em>$1</em>")
+      .replace(/\n/g, "<br />");
+    return { __html: html };
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-4">
+        <p className="text-sm font-medium text-amber-400">Privacy Note</p>
+        <p className="mt-1 text-xs text-amber-400/80">
+          These campaign notes are internal to the demo environment and never sent to or visible in the public demo inbox UI.
+        </p>
+      </div>
+      
+      <div className="space-y-4">
+        {CAMPAIGN_NOTES_FAKE.map((note) => (
+          <div key={note.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+            <div className="mb-2 flex items-center justify-between">
+              <h4 className="text-sm font-semibold text-foreground">{note.title}</h4>
+              <span className="text-xs text-muted-foreground">{note.date}</span>
+            </div>
+            <div 
+              className="text-sm text-muted-foreground [&>br]:mb-2 [&>strong]:text-foreground [&>em]:text-foreground/80"
+              dangerouslySetInnerHTML={renderMarkdownLite(note.content)}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const SECTION_CONTENT: Record<DashboardSection, () => ReactNode> = {
   overview: OverviewContent,
   accounts: AccountsContent,
   mail: MailContent,
   audit: AuditContent,
+  notes: NotesContent,
 };
 
 // ─── Dashboard Shell ──────────────────────────────────────────────────────────
