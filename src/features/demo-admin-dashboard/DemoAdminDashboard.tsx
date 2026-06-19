@@ -846,7 +846,7 @@ export function DemoAdminDashboard({ className }: DemoAdminDashboardProps) {
             </div>
           )}
 
-          {activeSection === "timeline" && <CampaignTimelinePanel />}
+          {activeSection === "timeline" && <div>Timeline Content</div>}
 
           {activeSection === "audit" && <AuditContent auditEvents={auditEvents} />}
         </div>
