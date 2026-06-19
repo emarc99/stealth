@@ -244,3 +244,15 @@ export { DATASET_EXPORT_SCHEMA_VERSION } from "./types/datasetExport";
 export type { DraftDatasetExport } from "./types/datasetExport";
 export { ExportDatasetButton } from "./components/ExportDatasetButton";
 export type { ExportDatasetButtonProps } from "./components/ExportDatasetButton";
+
+export {
+  DEMO_FOLDERS,
+  MAILBOX_GROUPS,
+  FOLDER_DEFINITIONS,
+  DEFAULT_FOLDER,
+  getFolderDefinition,
+  getFoldersForGroup,
+} from "./constants/folderTaxonomy";
+export type { DemoFolder, MailboxGroup, FolderDefinition } from "./constants/folderTaxonomy";
+export { FolderTaxonomySelector } from "./components/FolderTaxonomySelector";
+export type { FolderTaxonomySelectorProps } from "./components/FolderTaxonomySelector";
