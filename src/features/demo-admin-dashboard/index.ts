@@ -337,3 +337,7 @@ export {
 export type { DemoFolder, MailboxGroup, FolderDefinition } from "./constants/folderTaxonomy";
 export { FolderTaxonomySelector } from "./components/FolderTaxonomySelector";
 export type { FolderTaxonomySelectorProps } from "./components/FolderTaxonomySelector";
+
+// Draft dataset JSON import (issue #272): JSON -> safe drafts mapper with error output.
+export { mapImportedDataset, parseDatasetImport } from "./helpers/datasetImport";
+export type { DatasetImportIssue, DatasetImportResult } from "./types/datasetImport";
