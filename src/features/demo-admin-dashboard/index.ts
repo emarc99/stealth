@@ -244,3 +244,19 @@ export { DATASET_EXPORT_SCHEMA_VERSION } from "./types/datasetExport";
 export type { DraftDatasetExport } from "./types/datasetExport";
 export { ExportDatasetButton } from "./components/ExportDatasetButton";
 export type { ExportDatasetButtonProps } from "./components/ExportDatasetButton";
+
+export {
+  MESSAGE_FOLDERS,
+  DEFAULT_MESSAGE_FOLDER,
+  MESSAGE_FIELDS,
+  getMessageField,
+  createEmptyMessage,
+} from "./constants/messageListEditorModel";
+export type {
+  MessageFolder,
+  MessageFieldKey,
+  MessageFieldType,
+  EditableMessage,
+  MessageFieldMeta,
+} from "./constants/messageListEditorModel";
+export { messageListFixtures } from "./fixtures/messageListFixtures";
