@@ -53,12 +53,14 @@ tools/v2/team/shared-contact-notes/
 **Responsibility:** Define all data shapes and input/output contracts.
 
 **Exports:**
+
 - `Note` — the core data entity
 - `CreateNoteInput`, `UpdateNoteInput` — input contracts
 - `ServiceConfig` — service initialization config
 - Type aliases: `NoteId`, `ContactId`, `AuthorId`
 
 **Rules:**
+
 - Pure TypeScript types, no logic.
 - All fields are required unless explicitly `| null`.
 - Timestamps are ISO 8601 strings (not Date objects).
@@ -72,17 +74,20 @@ tools/v2/team/shared-contact-notes/
 **Responsibility:** Define deterministic, recoverable error types.
 
 **Exports:**
+
 - `ValidationError` — invalid input (failed validation)
 - `NoteNotFoundError` — missing note by id
 - `NoteError` — union type for type guards
 
 **Error Shape Rules:**
+
 - `ValidationError` includes a `fields` array with `{ field, message }` tuples.
 - `NoteNotFoundError` includes the `noteId` that was not found.
 - All errors are `instanceof` checkable.
 - Error messages are human-readable and deterministic.
 
 **Rules:**
+
 - Do not throw generic Error — use specific error types only.
 - All error shapes are serializable (no circular references, no functions).
 - Do not add authorization errors (not in scope for V2 release).
@@ -94,10 +99,12 @@ tools/v2/team/shared-contact-notes/
 **Responsibility:** Provide pure, deterministic validation functions.
 
 **Exports:**
+
 - `validateCreateNote(input: CreateNoteInput): ValidationError | null`
 - `validateUpdateNote(input: UpdateNoteInput): ValidationError | null`
 
 **Validation Rules:**
+
 - `contactId`, `content`, `authorId` must not be empty strings or whitespace-only.
 - `content` must have meaningful length (no single character).
 - All error results are deterministic — same input always produces same errors.
@@ -105,6 +112,7 @@ tools/v2/team/shared-contact-notes/
 - Do not validate against a persistent store (no id uniqueness checks).
 
 **Rules:**
+
 - Do not add async validation.
 - Do not add business logic beyond field validation.
 - All validation failures must map to specific field paths.
@@ -116,6 +124,7 @@ tools/v2/team/shared-contact-notes/
 **Responsibility:** Implement all CRUD operations and state management.
 
 **Public Methods:**
+
 - `create(input: CreateNoteInput): Promise<Note>`
 - `getByContact(contactId: ContactId): Promise<Note[]>`
 - `getById(id: NoteId): Promise<Note>`
@@ -124,11 +133,13 @@ tools/v2/team/shared-contact-notes/
 - `archive(id: NoteId): Promise<Note>`
 
 **Constructor:**
+
 ```ts
 constructor(seedNotes?: Note[], config?: Partial<ServiceConfig>)
 ```
 
 **Implementation Contract:**
+
 - Storage: in-memory `Map<NoteId, Note>` — no persistence.
 - All operations are async, always return Promises.
 - Configurable delay via `config.delayMs` (default: 0).
@@ -138,6 +149,7 @@ constructor(seedNotes?: Note[], config?: Partial<ServiceConfig>)
 - No network calls, no database access, no side effects outside the store.
 
 **Rules:**
+
 - Do not add authentication or authorization checks.
 - Do not add multi-user conflict resolution or locking.
 - Do not add real-time sync or WebSocket listeners.
@@ -151,17 +163,20 @@ constructor(seedNotes?: Note[], config?: Partial<ServiceConfig>)
 **Responsibility:** Define the public API surface.
 
 **What is exported:**
+
 - `NoteService` class
 - `Note`, `CreateNoteInput`, `UpdateNoteInput`, `ServiceConfig` types
 - `ValidationError`, `NoteNotFoundError` error classes
 - `validateCreateNote`, `validateUpdateNote` functions
 
 **What is NOT exported:**
+
 - Internal validation helpers or utilities.
 - Private service methods.
 - Seeding or fixture functions (not part of public API).
 
 **Rules:**
+
 - All public exports are documented via TypeScript types.
 - Do not re-export from external libraries.
 - This is the only file external consumers should import from.
@@ -172,14 +187,14 @@ constructor(seedNotes?: Note[], config?: Partial<ServiceConfig>)
 
 #### Responsibilities
 
-| Module | Owns | Responsible For |
-|--------|------|-----------------|
-| `types.ts` | Data shapes | Defining all contracts |
-| `errors.ts` | Error taxonomy | Error creation and serialization |
-| `validation.ts` | Input rules | Validating user input |
-| `service.ts` | In-memory store | CRUD operations, state consistency |
-| `fixtures/notes.ts` | Test data | Providing deterministic seed data |
-| `tests/` | Test coverage | Validating all contract guarantees |
+| Module              | Owns            | Responsible For                    |
+| ------------------- | --------------- | ---------------------------------- |
+| `types.ts`          | Data shapes     | Defining all contracts             |
+| `errors.ts`         | Error taxonomy  | Error creation and serialization   |
+| `validation.ts`     | Input rules     | Validating user input              |
+| `service.ts`        | In-memory store | CRUD operations, state consistency |
+| `fixtures/notes.ts` | Test data       | Providing deterministic seed data  |
+| `tests/`            | Test coverage   | Validating all contract guarantees |
 
 #### Data Flow
 
@@ -229,10 +244,12 @@ tests/service.test.ts
 #### External Dependencies
 
 **Allowed:**
+
 - TypeScript (type system only)
 - `crypto.randomUUID()` (native Web API for id generation)
 
 **Not allowed:**
+
 - Main app imports (`src/`, relative paths outside this folder)
 - External npm libraries (no third-party code)
 - Browser APIs beyond `crypto`
@@ -323,14 +340,14 @@ A future UI integration issue may add:
 
 ### Coverage
 
-| Category | Scenario | Test File |
-|----------|----------|-----------|
-| CRUD | Create, read, update, delete, archive | `service.test.ts` |
-| Validation | Empty fields, missing fields, multiple errors | `service.test.ts` |
-| Error handling | Not-found errors, validation errors | `service.test.ts` |
-| Determinism | Same input → same output | `service.test.ts` |
-| Mutation isolation | Returned data is copies | `service.test.ts` |
-| Loading state | Async behavior with configurable delay | `service.test.ts` |
+| Category           | Scenario                                      | Test File         |
+| ------------------ | --------------------------------------------- | ----------------- |
+| CRUD               | Create, read, update, delete, archive         | `service.test.ts` |
+| Validation         | Empty fields, missing fields, multiple errors | `service.test.ts` |
+| Error handling     | Not-found errors, validation errors           | `service.test.ts` |
+| Determinism        | Same input → same output                      | `service.test.ts` |
+| Mutation isolation | Returned data is copies                       | `service.test.ts` |
+| Loading state      | Async behavior with configurable delay        | `service.test.ts` |
 
 ### Test Execution
 
@@ -398,26 +415,25 @@ Reviewers must verify:
 
 ## File Ownership Map
 
-| File | Module | Owner | Type |
-|------|--------|-------|------|
-| `types.ts` | Data Model | Service Team | Stable |
-| `errors.ts` | Error Handling | Service Team | Stable |
-| `validation.ts` | Input Validation | Service Team | Stable |
-| `service.ts` | Core Service | Service Team | Stable |
-| `index.ts` | Public API | Service Team | Stable |
-| `specs.md` | Specification | Service Team | Reference |
-| `ARCHITECTURE.md` | Architecture | Service Team | Reference |
-| `README.md` | Overview | Service Team | Reference |
-| `docs/review-notes.md` | Review Guide | Service Team | Reference |
-| `fixtures/notes.ts` | Test Data | QA Team | Mutable |
-| `tests/service.test.ts` | Test Suite | QA Team | Mutable |
-| `tests/test-plan.md` | Test Plan | QA Team | Reference |
+| File                    | Module           | Owner        | Type      |
+| ----------------------- | ---------------- | ------------ | --------- |
+| `types.ts`              | Data Model       | Service Team | Stable    |
+| `errors.ts`             | Error Handling   | Service Team | Stable    |
+| `validation.ts`         | Input Validation | Service Team | Stable    |
+| `service.ts`            | Core Service     | Service Team | Stable    |
+| `index.ts`              | Public API       | Service Team | Stable    |
+| `specs.md`              | Specification    | Service Team | Reference |
+| `ARCHITECTURE.md`       | Architecture     | Service Team | Reference |
+| `README.md`             | Overview         | Service Team | Reference |
+| `docs/review-notes.md`  | Review Guide     | Service Team | Reference |
+| `fixtures/notes.ts`     | Test Data        | QA Team      | Mutable   |
+| `tests/service.test.ts` | Test Suite       | QA Team      | Mutable   |
+| `tests/test-plan.md`    | Test Plan        | QA Team      | Reference |
 
 ---
 
 ## Version History
 
-| Date | Status | Notes |
-|------|--------|-------|
+| Date       | Status  | Notes                                        |
+| ---------- | ------- | -------------------------------------------- |
 | 2026-06-20 | Initial | Created architecture contract for V2 release |
-
