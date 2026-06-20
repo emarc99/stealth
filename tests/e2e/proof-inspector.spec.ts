@@ -77,7 +77,7 @@ test.describe("proof inspector", () => {
 
     await page
       .locator(".fixed.inset-0")
-      .filter({ hasNot: page.locator(".pointer-events-none") })
+      .nth(1)
       .click({ position: { x: 10, y: 10 } });
     await expect(
       page.getByRole("dialog", { name: "Cryptographic proof inspector" }),
