@@ -1,13 +1,7 @@
 export type ProjectId = string;
 export type MailId = string;
 
-export type ProjectColor =
-  | "blue"
-  | "purple"
-  | "green"
-  | "amber"
-  | "rose"
-  | "cyan";
+export type ProjectColor = "blue" | "purple" | "green" | "amber" | "rose" | "cyan";
 
 export type BinderProject = {
   id: ProjectId;

@@ -1,10 +1,5 @@
 import type { BinderState, ProjectId, MailId } from "./types";
-import {
-  createProject,
-  deleteProject,
-  bindMail,
-  unbindMail,
-} from "./core";
+import { createProject, deleteProject, bindMail, unbindMail } from "./core";
 import type { CreateProjectParams, BindMailParams, CoreDeps } from "./core";
 import { seedProjects, seedMails } from "./fixtures/projects";
 
@@ -25,8 +20,8 @@ export class LocalBinderService {
     };
 
     this.deps = {
-      generateId: deps?.generateId ?? ((prefix) =>
-        `${prefix}-${Math.random().toString(36).substring(2, 9)}`),
+      generateId:
+        deps?.generateId ?? ((prefix) => `${prefix}-${Math.random().toString(36).substring(2, 9)}`),
       now: deps?.now ?? (() => new Date().toISOString()),
     };
   }
@@ -72,10 +67,7 @@ export class LocalBinderService {
   /**
    * Binds a mail to an existing project.
    */
-  async bindMail(
-    projectId: ProjectId,
-    params: BindMailParams,
-  ): Promise<BinderState> {
+  async bindMail(projectId: ProjectId, params: BindMailParams): Promise<BinderState> {
     await this.simulateDelay();
     if (this.state.status !== "success") {
       return {
@@ -106,7 +98,7 @@ export class LocalBinderService {
    * Used locally to artificially delay simulated network operations.
    */
   private async simulateDelay(): Promise<void> {
-    // A micro-delay to ensure async behaviour, keeping tests fast 
+    // A micro-delay to ensure async behaviour, keeping tests fast
     // while forcing consumers to handle Promise boundaries.
     return new Promise((resolve) => setTimeout(resolve, 5));
   }

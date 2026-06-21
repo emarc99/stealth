@@ -18,15 +18,9 @@ import { ProjectDetail } from "./ProjectDetail";
  * fixture data. It has no external dependencies and is not wired into
  * the main application routing or shell.
  */
-export function ProjectMailBinder({
-  initialState,
-}: {
-  initialState: BinderState;
-}) {
+export function ProjectMailBinder({ initialState }: { initialState: BinderState }) {
   const [state, setState] = React.useState<BinderState>(initialState);
-  const [selectedProjectId, setSelectedProjectId] = React.useState<
-    string | null
-  >(null);
+  const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
 
   // Sync if initialState prop changes (useful for testing/storybook)
   React.useEffect(() => {
@@ -60,7 +54,7 @@ export function ProjectMailBinder({
   // Derive detail data when a project is selected
   const selectedProject =
     state.status === "success"
-      ? state.projects.find((p) => p.id === selectedProjectId) ?? null
+      ? (state.projects.find((p) => p.id === selectedProjectId) ?? null)
       : null;
 
   const selectedMails =
@@ -85,34 +79,23 @@ export function ProjectMailBinder({
         className="flex items-center justify-between border-b px-4 py-3"
         style={{ borderColor: "var(--border)" }}
       >
-        <h1
-          className="text-sm font-semibold tracking-tight"
-          style={{ color: "var(--foreground)" }}
-        >
+        <h1 className="text-sm font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>
           {A11Y.containerLabel}
         </h1>
         {state.status === "success" && !selectedProject && (
-          <span
-            className="text-xs"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            {state.projects.length}{" "}
-            {state.projects.length === 1 ? "project" : "projects"}
+          <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+            {state.projects.length} {state.projects.length === 1 ? "project" : "projects"}
           </span>
         )}
       </header>
 
       {/* Content — wrapped in aria-live for async announcements */}
       <div aria-live={A11Y.liveRegion} className="min-h-[280px]">
-        {state.status === "empty" && (
-          <EmptyState onCreateClick={handleCreate} />
-        )}
+        {state.status === "empty" && <EmptyState onCreateClick={handleCreate} />}
 
         {state.status === "loading" && <LoadingState />}
 
-        {state.status === "error" && (
-          <ErrorState message={state.message} onRetry={handleRetry} />
-        )}
+        {state.status === "error" && <ErrorState message={state.message} onRetry={handleRetry} />}
 
         {state.status === "success" && !selectedProject && (
           <ProjectList

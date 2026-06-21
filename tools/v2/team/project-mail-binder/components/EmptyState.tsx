@@ -45,13 +45,7 @@ export function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
             strokeLinecap="round"
             opacity="0.3"
           />
-          <circle
-            cx="20"
-            cy="26"
-            r="6"
-            fill="var(--primary)"
-            opacity="0.15"
-          />
+          <circle cx="20" cy="26" r="6" fill="var(--primary)" opacity="0.15" />
           <path
             d="M20 23v6M17 26h6"
             stroke="var(--primary)"
@@ -62,18 +56,12 @@ export function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2
-          className="text-lg font-semibold"
-          style={{ color: "var(--foreground)" }}
-        >
+        <h2 className="text-lg font-semibold" style={{ color: "var(--foreground)" }}>
           {A11Y.emptyHeading}
         </h2>
-        <p
-          className="max-w-sm text-sm"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          Group related emails into project binders to keep your conversations
-          organized and easy to find.
+        <p className="max-w-sm text-sm" style={{ color: "var(--muted-foreground)" }}>
+          Group related emails into project binders to keep your conversations organized and easy to
+          find.
         </p>
       </div>
 
@@ -100,19 +88,8 @@ export function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
         }}
         id="binder-create-first"
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M8 3v10M3 8h10"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
         {A11Y.emptyCta}
       </button>

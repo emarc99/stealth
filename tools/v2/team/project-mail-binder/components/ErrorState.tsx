@@ -6,13 +6,7 @@ import { A11Y } from "../types";
  * Uses role="alert" so the error message is announced immediately to
  * screen readers, and provides a keyboard-accessible retry affordance.
  */
-export function ErrorState({
-  message,
-  onRetry,
-}: {
-  message: string;
-  onRetry: () => void;
-}) {
+export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <div
       className="flex flex-col items-center justify-center gap-5 px-6 py-16 text-center"
@@ -27,36 +21,16 @@ export function ErrorState({
         }}
         aria-hidden="true"
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="var(--destructive)"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M12 8v5"
-            stroke="var(--destructive)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="var(--destructive)" strokeWidth="1.5" />
+          <path d="M12 8v5" stroke="var(--destructive)" strokeWidth="1.5" strokeLinecap="round" />
           <circle cx="12" cy="16" r="1" fill="var(--destructive)" />
         </svg>
       </div>
 
       {/* Error message — role="alert" for immediate screen reader announcement */}
       <div className="flex flex-col gap-1.5" role="alert">
-        <h2
-          className="text-lg font-semibold"
-          style={{ color: "var(--foreground)" }}
-        >
+        <h2 className="text-lg font-semibold" style={{ color: "var(--foreground)" }}>
           {A11Y.errorHeading}
         </h2>
         <p className="max-w-sm text-sm" style={{ color: "var(--muted-foreground)" }}>
@@ -89,13 +63,7 @@ export function ErrorState({
         }}
         id="binder-retry-button"
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden="true"
-        >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path
             d="M2.5 8a5.5 5.5 0 0 1 9.37-3.9M13.5 8a5.5 5.5 0 0 1-9.37 3.9"
             stroke="currentColor"

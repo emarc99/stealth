@@ -121,10 +121,7 @@ export function ProjectList({
                 style={{ backgroundColor: colors.dot }}
                 aria-hidden="true"
               />
-              <h3
-                className="truncate text-sm font-semibold"
-                style={{ color: "var(--foreground)" }}
-              >
+              <h3 className="truncate text-sm font-semibold" style={{ color: "var(--foreground)" }}>
                 {project.name}
               </h3>
             </div>
@@ -146,13 +143,7 @@ export function ProjectList({
                   color: colors.dot,
                 }}
               >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  aria-hidden="true"
-                >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                   <rect
                     x="1.5"
                     y="3"

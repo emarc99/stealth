@@ -14,13 +14,7 @@ export type {
   MailId,
   ProjectColor,
 } from "./types";
-export {
-  isEmptyState,
-  isLoadingState,
-  isErrorState,
-  isSuccessState,
-  A11Y,
-} from "./types";
+export { isEmptyState, isLoadingState, isErrorState, isSuccessState, A11Y } from "./types";
 export {
   seedProjects,
   seedMails,
@@ -32,12 +26,7 @@ export {
 } from "./fixtures/projects";
 
 // Core logic exports
-export {
-  createProject,
-  deleteProject,
-  bindMail,
-  unbindMail,
-} from "./core";
+export { createProject, deleteProject, bindMail, unbindMail } from "./core";
 export type { CreateProjectParams, BindMailParams, CoreDeps } from "./core";
 
 export { LocalBinderService } from "./service";

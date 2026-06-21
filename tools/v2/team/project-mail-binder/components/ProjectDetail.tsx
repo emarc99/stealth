@@ -80,13 +80,7 @@ export function ProjectDetail({
           }}
           id="binder-back-button"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            aria-hidden="true"
-          >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path
               d="M10 3L5 8l5 5"
               stroke="currentColor"
@@ -98,33 +92,24 @@ export function ProjectDetail({
         </button>
 
         <div className="flex min-w-0 flex-col">
-          <h2
-            className="truncate text-base font-semibold"
-            style={{ color: "var(--foreground)" }}
-          >
+          <h2 className="truncate text-base font-semibold" style={{ color: "var(--foreground)" }}>
             {project.name}
           </h2>
           <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-            {project.mailCount} {project.mailCount === 1 ? "email" : "emails"} ·
-            Updated {formatDate(project.updatedAt)}
+            {project.mailCount} {project.mailCount === 1 ? "email" : "emails"} · Updated{" "}
+            {formatDate(project.updatedAt)}
           </p>
         </div>
       </div>
 
       {/* Description */}
-      <p
-        className="text-sm leading-relaxed"
-        style={{ color: "var(--muted-foreground)" }}
-      >
+      <p className="text-sm leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
         {project.description}
       </p>
 
       {/* Mail list */}
       {mails.length === 0 ? (
-        <p
-          className="py-8 text-center text-sm"
-          style={{ color: "var(--muted-foreground)" }}
-        >
+        <p className="py-8 text-center text-sm" style={{ color: "var(--muted-foreground)" }}>
           No emails bound to this project yet.
         </p>
       ) : (
@@ -144,10 +129,7 @@ export function ProjectDetail({
               id={`binder-mail-${mail.id}`}
             >
               <div className="flex items-baseline justify-between gap-2">
-                <h4
-                  className="truncate text-sm font-medium"
-                  style={{ color: "var(--foreground)" }}
-                >
+                <h4 className="truncate text-sm font-medium" style={{ color: "var(--foreground)" }}>
                   {mail.subject}
                 </h4>
                 <time
@@ -158,10 +140,7 @@ export function ProjectDetail({
                   {formatDate(mail.date)}
                 </time>
               </div>
-              <p
-                className="mt-0.5 text-xs"
-                style={{ color: "var(--muted-foreground)" }}
-              >
+              <p className="mt-0.5 text-xs" style={{ color: "var(--muted-foreground)" }}>
                 {mail.sender}
               </p>
               <p

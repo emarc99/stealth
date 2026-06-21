@@ -8,33 +8,33 @@ This tool references the app's existing design tokens **read-only** via CSS cust
 
 ### Colors
 
-| Token | Usage |
-|---|---|
-| `--background` | Container background |
-| `--foreground` | Primary text |
-| `--card` | Card/panel background |
-| `--border` | Borders and dividers |
-| `--muted-foreground` | Secondary/descriptive text |
-| `--primary` / `--primary-foreground` | CTA buttons |
-| `--accent` | Hover/selected card backgrounds |
-| `--destructive` | Error state icon and accents |
-| `--ring` | Focus ring color |
-| `--shadow-elegant` | Container and primary button shadow |
-| `--shadow-glow` | Selected card glow effect |
-| `--gradient-glass` | Empty state illustration background |
+| Token                                | Usage                               |
+| ------------------------------------ | ----------------------------------- |
+| `--background`                       | Container background                |
+| `--foreground`                       | Primary text                        |
+| `--card`                             | Card/panel background               |
+| `--border`                           | Borders and dividers                |
+| `--muted-foreground`                 | Secondary/descriptive text          |
+| `--primary` / `--primary-foreground` | CTA buttons                         |
+| `--accent`                           | Hover/selected card backgrounds     |
+| `--destructive`                      | Error state icon and accents        |
+| `--ring`                             | Focus ring color                    |
+| `--shadow-elegant`                   | Container and primary button shadow |
+| `--shadow-glow`                      | Selected card glow effect           |
+| `--gradient-glass`                   | Empty state illustration background |
 
 ### Project Color Indicators
 
 Each project has a `color` field mapped to oklch values:
 
-| Name | Dot | Background |
-|---|---|---|
-| `blue` | `oklch(0.65 0.15 250)` | 10% opacity variant |
-| `purple` | `oklch(0.6 0.18 290)` | 10% opacity variant |
-| `green` | `oklch(0.7 0.16 155)` | 10% opacity variant |
-| `amber` | `oklch(0.75 0.15 80)` | 10% opacity variant |
-| `rose` | `oklch(0.65 0.2 15)` | 10% opacity variant |
-| `cyan` | `oklch(0.75 0.12 200)` | 10% opacity variant |
+| Name     | Dot                    | Background          |
+| -------- | ---------------------- | ------------------- |
+| `blue`   | `oklch(0.65 0.15 250)` | 10% opacity variant |
+| `purple` | `oklch(0.6 0.18 290)`  | 10% opacity variant |
+| `green`  | `oklch(0.7 0.16 155)`  | 10% opacity variant |
+| `amber`  | `oklch(0.75 0.15 80)`  | 10% opacity variant |
+| `rose`   | `oklch(0.65 0.2 15)`   | 10% opacity variant |
+| `cyan`   | `oklch(0.75 0.12 200)` | 10% opacity variant |
 
 ### Spacing
 
@@ -44,13 +44,13 @@ Uses Tailwind's default spacing scale: `gap-1` through `gap-6`, `p-3`/`p-4`/`px-
 
 Inherits `--font-interface` (Inter) from the global design system. Scale:
 
-| Element | Size | Weight |
-|---|---|---|
-| Tool heading (h1) | `text-sm` | `font-semibold` |
-| Section headings (h2) | `text-lg` or `text-base` | `font-semibold` |
-| Card titles (h3, h4) | `text-sm` | `font-semibold` or `font-medium` |
-| Body / descriptions | `text-xs` or `text-sm` | normal |
-| Badges | `text-xs` | `font-medium` |
+| Element               | Size                     | Weight                           |
+| --------------------- | ------------------------ | -------------------------------- |
+| Tool heading (h1)     | `text-sm`                | `font-semibold`                  |
+| Section headings (h2) | `text-lg` or `text-base` | `font-semibold`                  |
+| Card titles (h3, h4)  | `text-sm`                | `font-semibold` or `font-medium` |
+| Body / descriptions   | `text-xs` or `text-sm`   | normal                           |
+| Badges                | `text-xs`                | `font-medium`                    |
 
 ### Border Radius
 
@@ -73,6 +73,7 @@ Error icon with a descriptive message and a "Retry" button. The error container 
 ### Success
 
 Two views:
+
 1. **Project list** — cards with color indicators, name, description, and mail count badge. Keyboard-navigable with arrow keys, Enter/Space to select.
 2. **Project detail** — shows selected project info and its bound emails. Back button and Esc key to return.
 
@@ -92,7 +93,9 @@ Two views:
 The core feature logic (introduced in Issue #640) is implemented as a set of pure functions wrapped by a `LocalBinderService` for predictable async testing and UI integration.
 
 ### Assumptions about Feature Scope
+
 Because the exact "Mail Binder" scope wasn't strictly defined, we assumed a minimalistic CRUD-style feature set:
+
 - Organizing mail items into named collections ("binders" or "projects").
 - Basic operations to **Create** and **Delete** projects.
 - Operations to **Bind** and **Unbind** mail items to projects.
@@ -104,6 +107,7 @@ Because the exact "Mail Binder" scope wasn't strictly defined, we assumed a mini
 The `LocalBinderService` models its results as a **discriminated union (`BinderState`)** instead of bare promises or throwing errors. This allows the UI to drive its state directly from the service output, natively supporting `empty`, `loading`, `error`, and `success` views without intermediate mapping.
 
 #### `BinderState` Shapes
+
 - `BinderStateEmpty`: `{ status: "empty" }`
 - `BinderStateLoading`: `{ status: "loading" }`
 - `BinderStateError`: `{ status: "error", message: string }`
@@ -111,13 +115,13 @@ The `LocalBinderService` models its results as a **discriminated union (`BinderS
 
 #### Exported Service Methods (`LocalBinderService`)
 
-| Method | Inputs | Returns | Possible Errors |
-|--------|--------|---------|-----------------|
-| `getState()` | None | `Promise<BinderState>` | None |
-| `createProject(params)` | `CreateProjectParams` (name, desc, color) | `Promise<BinderState>` | Invalid initial state, empty name |
-| `deleteProject(id)` | `ProjectId` | `Promise<BinderState>` | Invalid initial state, project not found |
+| Method                        | Inputs                                                         | Returns                | Possible Errors                          |
+| ----------------------------- | -------------------------------------------------------------- | ---------------------- | ---------------------------------------- |
+| `getState()`                  | None                                                           | `Promise<BinderState>` | None                                     |
+| `createProject(params)`       | `CreateProjectParams` (name, desc, color)                      | `Promise<BinderState>` | Invalid initial state, empty name        |
+| `deleteProject(id)`           | `ProjectId`                                                    | `Promise<BinderState>` | Invalid initial state, project not found |
 | `bindMail(projectId, params)` | `ProjectId`, `BindMailParams` (subject, sender, date, snippet) | `Promise<BinderState>` | Invalid initial state, project not found |
-| `unbindMail(mailId)` | `MailId` | `Promise<BinderState>` | Invalid initial state, mail not found |
+| `unbindMail(mailId)`          | `MailId`                                                       | `Promise<BinderState>` | Invalid initial state, mail not found    |
 
 _Under the hood, all logic flows through predictable, pure functions found in `core.ts`. The service handles simulating network latency and state mutation isolation._
 
@@ -128,6 +132,7 @@ npx vitest run tools/v2/team/project-mail-binder/
 ```
 
 Tests cover:
+
 - Core pure function business rules (create, delete, bind, unbind)
 - `LocalBinderService` async operations and error boundary
 - State builder shape and determinism

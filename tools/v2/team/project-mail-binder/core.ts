@@ -34,7 +34,7 @@ export type BindMailParams = {
 export function createProject(
   state: BinderStateSuccess | BinderStateEmpty,
   params: CreateProjectParams,
-  deps: CoreDeps
+  deps: CoreDeps,
 ): BinderStateSuccess | BinderStateError {
   if (!params.name.trim()) {
     return { status: "error", message: "Project name cannot be empty." };
@@ -69,7 +69,7 @@ export function createProject(
  */
 export function deleteProject(
   state: BinderStateSuccess,
-  projectId: ProjectId
+  projectId: ProjectId,
 ): BinderStateSuccess | BinderStateEmpty | BinderStateError {
   const projectExists = state.projects.some((p) => p.id === projectId);
   if (!projectExists) {
@@ -94,7 +94,7 @@ export function bindMail(
   state: BinderStateSuccess,
   projectId: ProjectId,
   params: BindMailParams,
-  deps: CoreDeps
+  deps: CoreDeps,
 ): BinderStateSuccess | BinderStateError {
   const projectIndex = state.projects.findIndex((p) => p.id === projectId);
   if (projectIndex === -1) {
@@ -112,7 +112,7 @@ export function bindMail(
 
   const projects = [...state.projects];
   const project = { ...projects[projectIndex] };
-  
+
   project.mailCount += 1;
   project.updatedAt = deps.now();
   projects[projectIndex] = project;
@@ -129,7 +129,7 @@ export function bindMail(
 export function unbindMail(
   state: BinderStateSuccess,
   mailId: MailId,
-  deps: CoreDeps
+  deps: CoreDeps,
 ): BinderStateSuccess | BinderStateError {
   const mail = state.mails.find((m) => m.id === mailId);
   if (!mail) {
@@ -142,7 +142,7 @@ export function unbindMail(
   }
 
   const mails = state.mails.filter((m) => m.id !== mailId);
-  
+
   const projects = [...state.projects];
   const project = { ...projects[projectIndex] };
   project.mailCount = Math.max(0, project.mailCount - 1);

@@ -75,8 +75,7 @@ export const seedMails: BinderMail[] = [
     subject: "Re: Contract terms for Initech",
     sender: "bob@legal.co",
     date: "2026-05-10T14:00:00.000Z",
-    snippet:
-      "The revised terms are attached. Key change: indemnity clause moved to section 4.2…",
+    snippet: "The revised terms are attached. Key change: indemnity clause moved to section 4.2…",
   },
   {
     id: "mail-003",
@@ -161,9 +160,7 @@ export function successState(): BinderStateSuccess {
 }
 
 /** Convenience: get a specific state by name */
-export function stateByName(
-  name: "empty" | "loading" | "error" | "success",
-): BinderState {
+export function stateByName(name: "empty" | "loading" | "error" | "success"): BinderState {
   switch (name) {
     case "empty":
       return emptyState();

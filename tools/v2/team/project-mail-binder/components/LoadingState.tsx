@@ -28,10 +28,7 @@ export function LoadingState() {
         >
           {/* Color indicator + title skeleton */}
           <div className="flex items-center gap-3">
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: "var(--muted)" }}
-            />
+            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "var(--muted)" }} />
             <div
               className="h-4 rounded"
               style={{
