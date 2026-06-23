@@ -53,13 +53,12 @@ test.describe("calendar linking", () => {
     await page.getByPlaceholder("What is happening?").fill("My Custom Meeting");
     await page.getByRole("button", { name: /Create event/i }).click();
 
-    await expect(page.getByText("My Custom Meeting")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "My Custom Meeting" })).toBeVisible();
     await expect(page.getByText("Event created")).toBeVisible();
 
     // Delete the event
-    await page.getByText("My Custom Meeting").first().click();
     await page.getByRole("button", { name: /Delete/i }).click();
     await expect(page.getByText("Event deleted")).toBeVisible();
-    await expect(page.getByText("My Custom Meeting")).not.toBeVisible();
+    await expect(page.getByText("My Custom Meeting")).toHaveCount(0);
   });
 });
