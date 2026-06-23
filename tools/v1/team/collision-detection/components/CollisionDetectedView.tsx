@@ -31,7 +31,10 @@ export function CollisionDetectedView({
   monitoredThreads,
 }: CollisionDetectedViewProps): JSX.Element {
   return (
-    <article aria-label="Collision scan results" style={{ border: "1px solid #e0e0e0", borderRadius: 8 }}>
+    <article
+      aria-label="Collision scan results"
+      style={{ border: "1px solid #e0e0e0", borderRadius: 8 }}
+    >
       <header
         style={{
           padding: "1rem 1.25rem",
@@ -39,9 +42,7 @@ export function CollisionDetectedView({
           backgroundColor: "#f9f9fb",
         }}
       >
-        <h2 style={{ fontSize: "1rem", fontWeight: 600, margin: 0 }}>
-          Collision Detection
-        </h2>
+        <h2 style={{ fontSize: "1rem", fontWeight: 600, margin: 0 }}>Collision Detection</h2>
         <p style={{ fontSize: "0.8rem", color: "#666", margin: "0.25rem 0 0 0" }}>
           {events.length === 0
             ? "No collisions detected"
@@ -55,7 +56,11 @@ export function CollisionDetectedView({
             All clear — no duplicate replies in progress.
           </p>
         ) : (
-          <ul role="list" aria-label="Collision events" style={{ margin: 0, padding: 0, listStyle: "none" }}>
+          <ul
+            role="list"
+            aria-label="Collision events"
+            style={{ margin: 0, padding: 0, listStyle: "none" }}
+          >
             {events.map((event) => (
               <li
                 key={event.id}
@@ -75,7 +80,14 @@ export function CollisionDetectedView({
                   }
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.5rem",
+                  }}
+                >
                   <span
                     aria-hidden="true"
                     style={{
@@ -101,11 +113,12 @@ export function CollisionDetectedView({
                     {event.severity}
                   </span>
                 </div>
-                <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "0.85rem", color: "#555" }}>
+                <ul
+                  style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "0.85rem", color: "#555" }}
+                >
                   {event.replies.map((reply) => (
                     <li key={reply.userId} style={{ marginBottom: "0.25rem" }}>
-                      {reply.userName} started replying at{" "}
-                      {formatTimestamp(reply.startedAt)}
+                      {reply.userName} started replying at {formatTimestamp(reply.startedAt)}
                     </li>
                   ))}
                 </ul>

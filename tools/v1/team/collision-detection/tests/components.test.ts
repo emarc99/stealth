@@ -90,13 +90,19 @@ describe("CollisionDetectedView", () => {
       expect(result.status).toBe("ok");
       return;
     }
-    const el = CollisionDetectedView({ events: data.events, monitoredThreads: data.monitoredThreads });
+    const el = CollisionDetectedView({
+      events: data.events,
+      monitoredThreads: data.monitoredThreads,
+    });
     expect(el.type).toBe("article");
   });
 
   it("renders collision event list", () => {
     if (!data) return;
-    const el = CollisionDetectedView({ events: data.events, monitoredThreads: data.monitoredThreads });
+    const el = CollisionDetectedView({
+      events: data.events,
+      monitoredThreads: data.monitoredThreads,
+    });
     expect(hasElement(el, (n) => n.props["aria-label"] === "Collision events")).toBe(true);
   });
 
@@ -128,7 +134,11 @@ describe("CollisionDetectionView", () => {
     const ok = scanActiveReplies(sampleReplies, 10);
     if (ok.status !== "ok") return;
     const el = CollisionDetectionView({
-      state: { status: "ready", events: ok.data.events, monitoredThreads: ok.data.monitoredThreads },
+      state: {
+        status: "ready",
+        events: ok.data.events,
+        monitoredThreads: ok.data.monitoredThreads,
+      },
     });
     expect(el.type).toBe(CollisionDetectedView);
   });
