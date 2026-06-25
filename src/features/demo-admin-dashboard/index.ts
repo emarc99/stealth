@@ -503,6 +503,24 @@ export type {
   BulkLabelOperation,
 } from "./bulkLabelPanel";
 
+// Bulk move panel (issue #204): move selected demo messages between mailbox folders.
+export { BulkMovePanel } from "./components/BulkMovePanel";
+export type { BulkMovePanelProps } from "./components/BulkMovePanel";
+export {
+  applyBulkFolderMove,
+  getMessageFolderLabel,
+  isValidMessageFolder,
+  previewBulkFolderMove,
+  summarizeBulkFolderMove,
+  validateBulkFolderMove,
+} from "./bulkMovePanel";
+export type {
+  BulkMoveAuditSummary,
+  BulkMoveEditResult,
+  BulkMoveMessageChange,
+  BulkMoveValidation,
+} from "./bulkMovePanel";
+
 // Draft dataset JSON import (issue #272): JSON -> safe drafts mapper with error output.
 export { mapImportedDataset, parseDatasetImport } from "./helpers/datasetImport";
 export type { DatasetImportIssue, DatasetImportResult } from "./types/datasetImport";
