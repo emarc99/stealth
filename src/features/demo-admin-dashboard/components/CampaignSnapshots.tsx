@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   AlertTriangle,
   BookOpen,
@@ -64,7 +64,7 @@ export function CampaignSnapshots({
     saveCampaignSnapshots(nextSnapshots);
   };
 
-  const handleSaveSnapshot = (e: React.FormEvent) => {
+  const handleSaveSnapshot = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !description.trim() || !targetAudience.trim()) {
       setFormError("Please fill out all required fields.");
@@ -100,27 +100,27 @@ export function CampaignSnapshots({
     setStatus("draft");
     setFormError("");
     setIsCreating(false);
-  };
+  }, [name, description, targetAudience, tagsInput, status, currentDataset, snapshots, commitSnapshots]);
 
-  const handleDeleteSnapshot = (id: string) => {
+  const handleDeleteSnapshot = useCallback((id: string) => {
     const next = snapshots.filter((s) => s.id !== id);
     commitSnapshots(next);
-  };
+  }, [snapshots, commitSnapshots]);
 
-  const triggerRestore = (snapshot: CampaignSnapshot) => {
+  const triggerRestore = useCallback((snapshot: CampaignSnapshot) => {
     setConfirmRestoreTarget(snapshot);
-  };
+  }, []);
 
-  const handleConfirmRestore = () => {
+  const handleConfirmRestore = useCallback(() => {
     if (!confirmRestoreTarget) return;
     onRestoreDataset(confirmRestoreTarget.drafts);
     setConfirmRestoreTarget(null);
-  };
+  }, [confirmRestoreTarget, onRestoreDataset]);
 
-  const handleMergeResolved = (resolvedDrafts: Draft[]) => {
+  const handleMergeResolved = useCallback((resolvedDrafts: Draft[]) => {
     onRestoreDataset(resolvedDrafts);
     setMergeTarget(null);
-  };
+  }, [onRestoreDataset]);
 
   return (
     <div className={cn("space-y-6", className)}>

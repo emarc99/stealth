@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useMemo, useCallback, type ReactNode } from "react";
 import {
   Activity,
   BarChart3,
@@ -195,6 +195,34 @@ const SECTION_ICON: Record<DashboardSection, React.ElementType> = {
 
 // ─── Content region components ────────────────────────────────────────────────
 
+const PRESET_OPTIONS = [
+  {
+    id: "none" as const,
+    name: "Default System",
+    desc: "Standard demo system stats and static fixtures.",
+  },
+  {
+    id: "relay-verification" as const,
+    name: "Relay Verification",
+    desc: "Simulates registering and verifying a new relay node.",
+  },
+  {
+    id: "proof-pending" as const,
+    name: "Proof Pending",
+    desc: "Simulates an on-chain cryptographic proof generation delay.",
+  },
+  {
+    id: "receipt-settlement" as const,
+    name: "Receipt Settlement",
+    desc: "Simulates postage fees and read receipts confirming on-chain.",
+  },
+  {
+    id: "encrypted-provenance" as const,
+    name: "Encrypted & Provenance",
+    desc: "Simulates encrypted payload delivery and cryptographic provenance verification on-chain.",
+  },
+] as const;
+
 function OverviewContent({
   activePresetId,
   setActivePresetId,
@@ -237,33 +265,7 @@ function OverviewContent({
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[
-            {
-              id: "none" as const,
-              name: "Default System",
-              desc: "Standard demo system stats and static fixtures.",
-            },
-            {
-              id: "relay-verification" as const,
-              name: "Relay Verification",
-              desc: "Simulates registering and verifying a new relay node.",
-            },
-            {
-              id: "proof-pending" as const,
-              name: "Proof Pending",
-              desc: "Simulates an on-chain cryptographic proof generation delay.",
-            },
-            {
-              id: "receipt-settlement" as const,
-              name: "Receipt Settlement",
-              desc: "Simulates postage fees and read receipts confirming on-chain.",
-            },
-            {
-              id: "encrypted-provenance" as const,
-              name: "Encrypted & Provenance",
-              desc: "Simulates encrypted payload delivery and cryptographic provenance verification on-chain.",
-            },
-          ].map((preset) => {
+          {PRESET_OPTIONS.map((preset) => {
             const active = activePresetId === preset.id;
             return (
               <button
@@ -312,7 +314,7 @@ function AccountsContent({
   selectedAccountAddress: string | null;
   setSelectedAccountAddress: (addr: string | null) => void;
 }) {
-  const columns: Column<PresetAccount>[] = [
+  const columns: Column<PresetAccount>[] = useMemo(() => [
     {
       key: "name",
       header: "Name",
@@ -382,7 +384,7 @@ function AccountsContent({
         );
       },
     },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
@@ -416,7 +418,7 @@ function MailContent({
   selectedMailSubject: string | null;
   setSelectedMailSubject: (subject: string | null) => void;
 }) {
-  const columns: Column<PresetMail>[] = [
+  const columns: Column<PresetMail>[] = useMemo(() => [
     {
       key: "subject",
       header: "Subject",
@@ -466,7 +468,7 @@ function MailContent({
       header: "Time",
       sortable: true,
     },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
@@ -491,7 +493,7 @@ function MailContent({
 }
 
 function AttachmentsContent({ attachments }: { attachments: PresetAttachment[] }) {
-  const columns: Column<PresetAttachment>[] = [
+  const columns: Column<PresetAttachment>[] = useMemo(() => [
     {
       key: "fileName",
       header: "File Name",
@@ -532,7 +534,7 @@ function AttachmentsContent({ attachments }: { attachments: PresetAttachment[] }
         <span className="font-mono text-xs text-muted-foreground">{att.sender}</span>
       ),
     },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
@@ -545,7 +547,7 @@ function AttachmentsContent({ attachments }: { attachments: PresetAttachment[] }
 }
 
 function EventsContent({ events }: { events: PresetEvent[] }) {
-  const columns: Column<PresetEvent>[] = [
+  const columns: Column<PresetEvent>[] = useMemo(() => [
     {
       key: "title",
       header: "Title",
@@ -601,7 +603,7 @@ function EventsContent({ events }: { events: PresetEvent[] }) {
         </span>
       ),
     },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
@@ -614,7 +616,7 @@ function EventsContent({ events }: { events: PresetEvent[] }) {
 }
 
 function AuditContent({ auditEvents }: { auditEvents: PresetAuditEvent[] }) {
-  const columns: Column<PresetAuditEvent>[] = [
+  const columns: Column<PresetAuditEvent>[] = useMemo(() => [
     {
       key: "action",
       header: "Action",
@@ -643,7 +645,7 @@ function AuditContent({ auditEvents }: { auditEvents: PresetAuditEvent[] }) {
         </span>
       ),
     },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
@@ -672,23 +674,50 @@ export function DemoAdminDashboard({ className }: DemoAdminDashboardProps) {
   const [selectedAccountAddress, setSelectedAccountAddress] = useState<string | null>(null);
   const [selectedMailSubject, setSelectedMailSubject] = useState<string | null>(null);
 
-  const activePreset = PRESET_SCENARIOS.find((p) => p.id === activePresetId);
+  const activePreset = useMemo(
+    () => PRESET_SCENARIOS.find((p) => p.id === activePresetId),
+    [activePresetId],
+  );
 
-  const stats = activePreset ? activePreset.stats : OVERVIEW_STATS;
-  const accounts = activePreset ? activePreset.accounts : ACCOUNTS_FAKE;
-  const mail = activePreset ? activePreset.mail : MAIL_FIXTURES;
-  const attachments = activePreset ? activePreset.attachments : ATTACHMENTS_FAKE;
-  const events = activePreset ? activePreset.events : EVENTS_FAKE;
-  const auditEvents = activePreset ? activePreset.auditEvents : AUDIT_EVENTS_FAKE;
+  const stats = useMemo(
+    () => (activePreset ? activePreset.stats : OVERVIEW_STATS),
+    [activePreset],
+  );
+  const accounts = useMemo(
+    () => (activePreset ? activePreset.accounts : ACCOUNTS_FAKE),
+    [activePreset],
+  );
+  const mail = useMemo(
+    () => (activePreset ? activePreset.mail : MAIL_FIXTURES),
+    [activePreset],
+  );
+  const attachments = useMemo(
+    () => (activePreset ? activePreset.attachments : ATTACHMENTS_FAKE),
+    [activePreset],
+  );
+  const events = useMemo(
+    () => (activePreset ? activePreset.events : EVENTS_FAKE),
+    [activePreset],
+  );
+  const auditEvents = useMemo(
+    () => (activePreset ? activePreset.auditEvents : AUDIT_EVENTS_FAKE),
+    [activePreset],
+  );
 
-  const selectedAccount = accounts.find((a) => a.address === selectedAccountAddress);
-  const selectedMail = mail.find((m) => m.subject === selectedMailSubject);
+  const selectedAccount = useMemo(
+    () => accounts.find((a) => a.address === selectedAccountAddress),
+    [accounts, selectedAccountAddress],
+  );
+  const selectedMail = useMemo(
+    () => mail.find((m) => m.subject === selectedMailSubject),
+    [mail, selectedMailSubject],
+  );
 
-  const handleSectionChange = (section: DashboardSection) => {
+  const handleSectionChange = useCallback((section: DashboardSection) => {
     setActiveSection(section);
     setSelectedAccountAddress(null);
     setSelectedMailSubject(null);
-  };
+  }, []);
 
   const Icon = SECTION_ICON[activeSection];
 
@@ -780,11 +809,11 @@ export function DemoAdminDashboard({ className }: DemoAdminDashboardProps) {
           {activeSection === "overview" && (
             <OverviewContent
               activePresetId={activePresetId}
-              setActivePresetId={(id) => {
+              setActivePresetId={useCallback((id: PresetId) => {
                 setActivePresetId(id);
                 setSelectedAccountAddress(null);
                 setSelectedMailSubject(null);
-              }}
+              }, [])}
               stats={stats}
             />
           )}
