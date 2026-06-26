@@ -13,14 +13,16 @@ import {
 const sampleText = SAMPLE_TEXTS[0].input;
 
 describe("cleanGrammar", () => {
-  it("detects and corrects homophone errors", () => {
+  it("detects and corrects homophone errors without dropping following words", () => {
     const result = cleanGrammar(sampleText);
     expect(result.status).toBe("ok");
     if (result.status !== "ok") return;
     expect(result.result.changed).toBe(true);
     expect(result.result.issueCount).toBeGreaterThan(0);
-    expect(result.result.correctedText).toContain("they're");
-    expect(result.result.correctedText).not.toContain("teh");
+    expect(result.result.correctedText).toContain("they're going");
+    expect(result.result.correctedText).toContain("You're the best");
+    expect(result.result.correctedText).toContain("it's important");
+    expect(result.result.correctedText).not.toContain("there going");
   });
 
   it("capitalizes 'i' to 'I'", () => {
@@ -40,6 +42,17 @@ describe("cleanGrammar", () => {
     expect(result.result.correctedText).not.toContain("just");
     expect(result.result.correctedText).not.toContain("basically");
     expect(result.result.changed).toBe(true);
+  });
+
+  it("preserves captured words in their/there/your corrections", () => {
+    const result = cleanGrammar({
+      bodyText: "Their ready now. There working late. Your welcome to join.",
+    });
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.result.correctedText).toBe(
+      "They're ready now. They're working late. You're welcome to join.",
+    );
   });
 
   it("fixes punctuation spacing", () => {

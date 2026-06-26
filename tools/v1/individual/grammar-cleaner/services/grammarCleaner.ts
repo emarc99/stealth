@@ -66,6 +66,25 @@ const HOMOPHONE_RULES: ReplacementRule[] = [
     explanation: "Use 'it's' as a contraction of 'it is' or 'it has'.",
   },
   {
+    pattern:
+      /\byour\s+(ready|done|finished|late|early|here|there|back|not|also|still|already|always|never|just|only|even|all|going|coming|working|happy|sorry|right|wrong|welcome|aware|concerned|interested|the\b)/gi,
+    replacement: "you're $1",
+    type: "spelling",
+    explanation: "Use 'you're' as a contraction of 'you are' before a description.",
+  },
+  {
+    pattern: /\btheirs\s+(a|an|alot|a lot|many|much|no|not)\b/gi,
+    replacement: "there's $1",
+    type: "spelling",
+    explanation: "Use 'there's' when you mean 'there is'.",
+  },
+  {
+    pattern: /\baccidently\b/gi,
+    replacement: "accidentally",
+    type: "spelling",
+    explanation: "'Accidentally' includes the '-ally' ending.",
+  },
+  {
     pattern: /\baffect\b/gi,
     replacement: "effect",
     type: "spelling",
@@ -158,14 +177,14 @@ const HOMOPHONE_RULES: ReplacementRule[] = [
   {
     pattern:
       /\bthere\s+(going|coming|doing|making|getting|having|working|taking|bringing|leaving|heading|arriving|planning|trying|looking|waiting|checking|reviewing|sending|preparing|meeting|starting|finishing|leading|running|building|creating|setting)\b/gi,
-    replacement: "they're",
+    replacement: "they're $1",
     type: "spelling",
     explanation: "Use 'they're' as a contraction of 'they are' before a verb.",
   },
   {
     pattern:
       /\btheir\s+(ready|done|finished|late|early|here|there|back|not|also|still|already|always|never|just|only|even|all|both|each|going|coming|working|happy|sorry|thankful|grateful|aware|concerned|interested)\b/gi,
-    replacement: "they're",
+    replacement: "they're $1",
     type: "spelling",
     explanation: "Use 'they're' (they are) instead of 'their' (possessive) before a description.",
   },
