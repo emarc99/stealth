@@ -254,8 +254,8 @@ export function ThreadList({
                         onClick={() => {
                           try {
                             onAutoAssign(thread.id);
-                          } catch (err: any) {
-                            alert(err.message);
+                          } catch (err: unknown) {
+                            alert(err instanceof Error ? err.message : String(err));
                           }
                         }}
                         className="px-2.5 py-1.5 text-[10px] font-semibold bg-sky-950/30 border border-sky-500/20 text-sky-400 hover:bg-sky-950/60 rounded-lg transition"

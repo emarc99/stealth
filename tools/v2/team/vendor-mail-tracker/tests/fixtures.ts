@@ -2,7 +2,7 @@
 // Use these to create consistent test data
 
 import type { Vendor, CommunicationRecord, VendorMetrics } from "../types";
-import { VendorCategory, VendorStatus, CommunicationType, CommunicationStatus } from "../types";
+import { VendorCategory, VendorStatus, CommunicationType, CommunicationStatus, Trend } from "../types";
 
 /**
  * Create a mock vendor with sensible defaults
@@ -80,7 +80,7 @@ export function createMockVendorMetrics(overrides?: Partial<VendorMetrics>): Ven
     engagementScore: overrides?.engagementScore || 75,
     communicationFrequency: overrides?.communicationFrequency || 3.2,
     lastInteraction: overrides?.lastInteraction || new Date(),
-    trend: overrides?.trend || ("stable" as any),
+    trend: overrides?.trend || Trend.STABLE,
     metadata: overrides?.metadata,
   };
 }
