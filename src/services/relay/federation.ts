@@ -22,7 +22,11 @@
  */
 
 export type DeliveryState =
-  "DISCOVERY" | "HANDOFF" | "ACKNOWLEDGED" | "DEDUPLICATED" | "DEAD_LETTER";
+  | "DISCOVERY"
+  | "HANDOFF"
+  | "ACKNOWLEDGED"
+  | "DEDUPLICATED"
+  | "DEAD_LETTER";
 
 export interface FederationMessage {
   id: string;
