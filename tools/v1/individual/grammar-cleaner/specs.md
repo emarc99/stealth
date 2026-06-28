@@ -42,13 +42,13 @@ components/ ──► hooks/ ──► services/  (one-way, no cycles)
 
 ## Data Ownership Rules
 
-| Data | Owner | Description |
+| Data                        | Owner                            | Description                                         |
 | --------------------------- | -------------------------------- | --------------------------------------------------- | ---------- | ---- | ----- |
-| Raw input text | Hook | Stored in local state, passed to services on demand |
-| Processing status | Hook | idle | processing | done | error |
-| Correction results | Hook (cache) / Service (compute) | Service computes, hook caches for re-render |
-| Active correction choice | Component | Which suggested correction the user selected |
-| Cursor / selection position | Component | Editor caret state, scoped to the input component |
+| Raw input text              | Hook                             | Stored in local state, passed to services on demand |
+| Processing status           | Hook                             | idle                                                | processing | done | error |
+| Correction results          | Hook (cache) / Service (compute) | Service computes, hook caches for re-render         |
+| Active correction choice    | Component                        | Which suggested correction the user selected        |
+| Cursor / selection position | Component                        | Editor caret state, scoped to the input component   |
 
 - Input and output data NEVER leaves the hook layer unless rendered by a component.
 - Services are pure: given the same input string, they must return the same output every time.

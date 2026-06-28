@@ -1,5 +1,9 @@
 export type GrammarIssueCategory =
-  "spelling" | "grammar" | "punctuation" | "capitalization" | "redundancy";
+  | "spelling"
+  | "grammar"
+  | "punctuation"
+  | "capitalization"
+  | "redundancy";
 
 export interface TextRange {
   start: number;
