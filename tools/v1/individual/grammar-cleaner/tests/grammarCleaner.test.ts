@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { cleanGrammar, toReadyState, type GrammarInput } from "../services/grammarCleaner";
 import { EMPTY_TEXT_INPUT, SAMPLE_TEXTS } from "../services/fixtures";
 import {
+  checkDatasetLimits,
   checkInputLimits,
   GUARD_LIMITS,
   safeCleanGrammar,
@@ -13,14 +14,16 @@ import {
 const sampleText = SAMPLE_TEXTS[0].input;
 
 describe("cleanGrammar", () => {
-  it("detects and corrects homophone errors", () => {
+  it("detects and corrects homophone errors without dropping following words", () => {
     const result = cleanGrammar(sampleText);
     expect(result.status).toBe("ok");
     if (result.status !== "ok") return;
     expect(result.result.changed).toBe(true);
     expect(result.result.issueCount).toBeGreaterThan(0);
-    expect(result.result.correctedText).toContain("they're");
-    expect(result.result.correctedText).not.toContain("teh");
+    expect(result.result.correctedText).toContain("they're going");
+    expect(result.result.correctedText).toContain("You're the best");
+    expect(result.result.correctedText).toContain("it's important");
+    expect(result.result.correctedText).not.toContain("there going");
   });
 
   it("capitalizes 'i' to 'I'", () => {
@@ -40,6 +43,17 @@ describe("cleanGrammar", () => {
     expect(result.result.correctedText).not.toContain("just");
     expect(result.result.correctedText).not.toContain("basically");
     expect(result.result.changed).toBe(true);
+  });
+
+  it("preserves captured words in their/there/your corrections", () => {
+    const result = cleanGrammar({
+      bodyText: "Their ready now. There working late. Your welcome to join.",
+    });
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.result.correctedText).toBe(
+      "They're ready now. They're working late. You're welcome to join.",
+    );
   });
 
   it("fixes punctuation spacing", () => {
@@ -105,6 +119,10 @@ describe("guards", () => {
     expect(sanitizeText("hello\u0000world")).toBe("helloworld");
   });
 
+  it("sanitizes invisible and bidirectional formatting characters", () => {
+    expect(sanitizeText("pay\u202enow\u2066please")).toBe("paynowplease");
+  });
+
   it("sanitizes grammar input text fields", () => {
     const input = { bodyText: "hello\u200bworld" };
     const sanitized = sanitizeGrammarInput(input);
@@ -124,9 +142,50 @@ describe("guards", () => {
     expect(issue).toBeNull();
   });
 
+  it("rejects attachments before grammar processing", () => {
+    const issue = checkDatasetLimits({ attachments: [{ name: "invoice.html" }] });
+    expect(issue).not.toBeNull();
+    expect(issue!.code).toBe("unsupported-dataset");
+  });
+
+  it("rejects malformed dataset fields", () => {
+    const issue = checkDatasetLimits({ attachments: { name: "invoice.html" } });
+    expect(issue).not.toBeNull();
+    expect(issue!.code).toBe("unsupported-dataset");
+  });
+
+  it("rejects team datasets outside individual scope", () => {
+    const issue = checkDatasetLimits({ teamMembers: [{ id: "a" }, { id: "b" }] });
+    expect(issue).not.toBeNull();
+    expect(issue!.code).toBe("unsupported-dataset");
+  });
+
+  it("rejects message history datasets", () => {
+    const issue = checkDatasetLimits({ threadHistory: [{ bodyText: "old" }] });
+    expect(issue).not.toBeNull();
+    expect(issue!.code).toBe("unsupported-dataset");
+  });
+
   it("safeCleanGrammar delegates to engine for valid input", () => {
     const result = safeCleanGrammar({ bodyText: "i have a typo" });
     expect(result.status).toBe("ok");
+  });
+
+  it("safeCleanGrammar rejects malformed non-object input", () => {
+    const result = safeCleanGrammar("not an object");
+    expect(result.status).toBe("error");
+    if (result.status !== "error") return;
+    expect(result.code).toBe("unsupported-input");
+  });
+
+  it("safeCleanGrammar rejects hostile integration datasets", () => {
+    const result = safeCleanGrammar({
+      bodyText: "please check this",
+      attachments: [{ name: "payload.html" }],
+    });
+    expect(result.status).toBe("error");
+    if (result.status !== "error") return;
+    expect(result.code).toBe("unsupported-dataset");
   });
 
   it("safeCleanGrammar rejects oversized input before engine runs", () => {

@@ -285,8 +285,8 @@ export function ThreadList({
                         onClick={() => {
                           try {
                             onAutoAssign(thread.id);
-                          } catch (err: any) {
-                            alert(err.message);
+                          } catch (err: unknown) {
+                            alert(err instanceof Error ? err.message : String(err));
                           }
                         }}
                         aria-label="Smart auto-route"

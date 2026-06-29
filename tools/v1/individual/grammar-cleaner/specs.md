@@ -43,9 +43,9 @@ components/ ──► hooks/ ──► services/  (one-way, no cycles)
 ## Data Ownership Rules
 
 | Data                        | Owner                            | Description                                         |
-| --------------------------- | -------------------------------- | --------------------------------------------------- | ---------- | ---- | ----- |
+| :-------------------------- | :------------------------------- | :-------------------------------------------------- |
 | Raw input text              | Hook                             | Stored in local state, passed to services on demand |
-| Processing status           | Hook                             | idle                                                | processing | done | error |
+| Processing status           | Hook                             | `idle` \| `processing` \| `done` \| `error`         |
 | Correction results          | Hook (cache) / Service (compute) | Service computes, hook caches for re-render         |
 | Active correction choice    | Component                        | Which suggested correction the user selected        |
 | Cursor / selection position | Component                        | Editor caret state, scoped to the input component   |

@@ -15,7 +15,11 @@ const sampleReplies = COLLISION_FIXTURES[0].replies;
 
 function isElement(n: unknown): n is ReactElement<any> {
   return (
-    typeof n === "object" && n !== null && "type" in n && "props" in (n as Record<string, unknown>)
+    typeof n === "object" &&
+    n !== null &&
+    "type" in n &&
+    "props" in (n as Record<string, unknown>) &&
+    typeof (n as Record<string, unknown>).props === "object"
   );
 }
 

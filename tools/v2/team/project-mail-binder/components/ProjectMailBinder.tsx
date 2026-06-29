@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { BinderState } from "../types";
+import type { BinderState, Project } from "../types";
 import { A11Y } from "../types";
 import { EmptyState } from "./EmptyState";
 import { LoadingState } from "./LoadingState";
@@ -99,7 +99,7 @@ export function ProjectMailBinder({ initialState }: { initialState: BinderState 
 
         {state.status === "success" && !selectedProject && (
           <ProjectList
-            projects={state.projects as any}
+            projects={state.projects as unknown as Project[]}
             getMailCountForProject={(id) => state.projects.find((p) => p.id === id)?.mailCount ?? 0}
             selectedProjectId={selectedProjectId}
             onSelectProject={setSelectedProjectId}
