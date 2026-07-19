@@ -44,12 +44,8 @@ describe("Postage Quote Validation", () => {
     });
 
     it("rejects recipient with special characters", () => {
-      expect(() =>
-        stellarAddressSchema.parse(`G${"A".repeat(50)}@AAAA`),
-      ).toThrow();
-      expect(() =>
-        stellarAddressSchema.parse(`G${"A".repeat(50)}*AAAA`),
-      ).toThrow();
+      expect(() => stellarAddressSchema.parse(`G${"A".repeat(50)}@AAAA`)).toThrow();
+      expect(() => stellarAddressSchema.parse(`G${"A".repeat(50)}*AAAA`)).toThrow();
     });
 
     it("normalizes valid recipient with lowercase to uppercase", () => {
