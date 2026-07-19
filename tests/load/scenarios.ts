@@ -6,7 +6,7 @@ console.log(`\n🚀 Starting Load Test Suite targeting ${API_URL}`);
 async function scenarioBurstReads() {
   const owner = generateRandomAddress();
   const sender = generateRandomAddress();
-  
+
   // Rate limiting test for Burst Reads (Submits)
   // Account limit is 50 requests per hour per the abuse service
   // Blasting 100 requests should trigger 429 Too Many Requests
@@ -16,10 +16,16 @@ async function scenarioBurstReads() {
       url: `${API_URL}/api/v1/postage`,
       method: "POST",
       headers: { "x-stealth-address": sender, "Content-Type": "application/json" },
-      body: { messageId: generateRandomHash(), paymentHash: generateRandomHash(), sender, recipient: owner, amount: "1000000000" } // large amount to bypass 422
+      body: {
+        messageId: generateRandomHash(),
+        paymentHash: generateRandomHash(),
+        sender,
+        recipient: owner,
+        amount: "1000000000",
+      }, // large amount to bypass 422
     }),
     15, // concurrency
-    100 // iterations
+    100, // iterations
   );
 
   if (result.statusCodes[429] > 0) {
@@ -57,11 +63,11 @@ async function scenarioConcurrentTransitions() {
   try {
     const createRes = await fetch(`${API_URL}/api/v1/postage`, {
       method: "POST",
-      headers: { 
+      headers: {
         "x-stealth-address": sender,
         "x-forwarded-for": `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.0.1`,
         "user-agent": `LoadTester-${Math.random()}`,
-        "Content-Type": "application/json" 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         messageId,
@@ -90,10 +96,10 @@ async function scenarioConcurrentTransitions() {
     () => ({
       url: `${API_URL}/api/v1/postage/${messageId}/settle`,
       method: "POST",
-      headers: { 
+      headers: {
         "x-stealth-address": owner,
         "x-forwarded-for": `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.0.1`,
-        "user-agent": `LoadTester-${Math.random()}`
+        "user-agent": `LoadTester-${Math.random()}`,
       },
     }),
     20, // Blast them all at once
