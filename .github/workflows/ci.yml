@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -32,6 +34,14 @@ jobs:
 
       - name: Typecheck
         run: bun x tsc --noEmit
+
+      - name: Generate OpenAPI
+        run: bun run generate:openapi
+
+      - name: OpenAPI Compatibility
+        run: npx @useoptic/optic diff openapi.json --base origin/main --check --standard default
+        env:
+          OPTIC_TOKEN: ${{ secrets.OPTIC_TOKEN }}
 
       - name: Unit Tests
         run: bun run test
