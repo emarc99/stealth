@@ -38,6 +38,11 @@ jobs:
       - name: Generate OpenAPI
         run: bun run generate:openapi
 
+      - name: Setup Node for Optic
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
       - name: OpenAPI Compatibility
         run: npx @useoptic/optic diff openapi.json --base origin/main --check --standard default
         env:
