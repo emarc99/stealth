@@ -41,9 +41,7 @@ describe("ExecutionService — success fixtures", () => {
 
   for (const fixture of cases) {
     it(fixture.name ?? `succeeds for ${fixture.input.action}`, async () => {
-      const result: ExecutionOutput = await service.execute(
-        fixture.input as ExecutionInput,
-      );
+      const result: ExecutionOutput = await service.execute(fixture.input as ExecutionInput);
       expect(result.success).toBe(true);
       expect(result.error).toBeUndefined();
 
@@ -87,16 +85,12 @@ describe("ExecutionService — failure fixtures", () => {
 
   for (const fixture of cases) {
     it(fixture.name ?? `fails for ${fixture.input.action}`, async () => {
-      const result: ExecutionOutput = await service.execute(
-        fixture.input as ExecutionInput,
-      );
+      const result: ExecutionOutput = await service.execute(fixture.input as ExecutionInput);
       expect(result.success).toBe(false);
       expect(result.data).toBeUndefined();
       expect(result.error).toBeDefined();
       expect(result.error!.code).toBe(fixture.expectedOutput.error!.code);
-      expect(result.error!.message).toBe(
-        fixture.expectedOutput.error!.message,
-      );
+      expect(result.error!.message).toBe(fixture.expectedOutput.error!.message);
     });
   }
 });
@@ -153,9 +147,7 @@ describe("ExecutionService — summary lifecycle", () => {
     });
     expect(getResult.success).toBe(true);
     expect(getResult.data.summary.id).toBe(summaryId);
-    expect(getResult.data.summary.content).toBe(
-      createResult.data.summary.content,
-    );
+    expect(getResult.data.summary.content).toBe(createResult.data.summary.content);
 
     // 3. List — should contain exactly one
     const listResult = await service.execute({ action: "LIST_SUMMARIES" });

@@ -97,8 +97,7 @@ export class ExecutionService {
         success: false,
         error: {
           code: ExecutionErrorCode.INTERNAL_ERROR,
-          message:
-            error instanceof Error ? error.message : "Unknown internal error",
+          message: error instanceof Error ? error.message : "Unknown internal error",
         },
       };
     }
@@ -108,9 +107,7 @@ export class ExecutionService {
   // Action handlers
   // -------------------------------------------------------------------------
 
-  private async handleSummarizePdf(
-    input: ExecutionInput,
-  ): Promise<ExecutionOutput> {
+  private async handleSummarizePdf(input: ExecutionInput): Promise<ExecutionOutput> {
     const payload = input.payload as SummarizePdfPayload | undefined;
 
     if (!payload?.pdfContent || !payload?.fileName) {
@@ -118,8 +115,7 @@ export class ExecutionService {
         success: false,
         error: {
           code: ExecutionErrorCode.INVALID_INPUT,
-          message:
-            "pdfContent and fileName are required for SUMMARIZE_PDF",
+          message: "pdfContent and fileName are required for SUMMARIZE_PDF",
         },
       };
     }
@@ -139,10 +135,7 @@ export class ExecutionService {
       ...(payload.settings ?? {}),
     };
 
-    const summaryContent = this.generateSummaryText(
-      payload.pdfContent,
-      settings,
-    );
+    const summaryContent = this.generateSummaryText(payload.pdfContent, settings);
 
     const keywords = settings.includeKeywords
       ? this.extractKeywords(payload.pdfContent)
@@ -168,9 +161,7 @@ export class ExecutionService {
     };
   }
 
-  private async handleValidatePdf(
-    input: ExecutionInput,
-  ): Promise<ExecutionOutput> {
+  private async handleValidatePdf(input: ExecutionInput): Promise<ExecutionOutput> {
     const payload = input.payload as ValidatePdfPayload | undefined;
 
     if (!payload?.fileName || payload?.fileSizeBytes == null || !payload?.mimeType) {
@@ -178,8 +169,7 @@ export class ExecutionService {
         success: false,
         error: {
           code: ExecutionErrorCode.INVALID_INPUT,
-          message:
-            "fileName, fileSizeBytes, and mimeType are required for VALIDATE_PDF",
+          message: "fileName, fileSizeBytes, and mimeType are required for VALIDATE_PDF",
         },
       };
     }
@@ -215,9 +205,7 @@ export class ExecutionService {
     };
   }
 
-  private async handleGetSummary(
-    input: ExecutionInput,
-  ): Promise<ExecutionOutput> {
+  private async handleGetSummary(input: ExecutionInput): Promise<ExecutionOutput> {
     const payload = input.payload as GetSummaryPayload | undefined;
 
     if (!payload?.summaryId) {
@@ -257,9 +245,7 @@ export class ExecutionService {
     };
   }
 
-  private async handleDeleteSummary(
-    input: ExecutionInput,
-  ): Promise<ExecutionOutput> {
+  private async handleDeleteSummary(input: ExecutionInput): Promise<ExecutionOutput> {
     const payload = input.payload as DeleteSummaryPayload | undefined;
 
     if (!payload?.summaryId) {
@@ -316,10 +302,7 @@ export class ExecutionService {
    * This is a text-truncation/extraction algorithm (no AI/ML), consistent
    * with the spec's constraint of "deterministic output for same input."
    */
-  private generateSummaryText(
-    content: string,
-    settings: SummarySettings,
-  ): string {
+  private generateSummaryText(content: string, settings: SummarySettings): string {
     const sentences = this.splitSentences(content);
     const targetWords = LENGTH_WORD_TARGETS[settings.length];
 
@@ -365,16 +348,99 @@ export class ExecutionService {
    */
   private extractKeywords(text: string, limit = 5): string[] {
     const stopWords = new Set([
-      "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
-      "of", "with", "by", "from", "is", "it", "as", "be", "was", "were",
-      "are", "been", "being", "have", "has", "had", "do", "does", "did",
-      "will", "would", "could", "should", "may", "might", "shall", "can",
-      "not", "this", "that", "these", "those", "i", "you", "he", "she",
-      "we", "they", "me", "him", "her", "us", "them", "my", "your", "his",
-      "its", "our", "their", "what", "which", "who", "whom", "how", "when",
-      "where", "why", "all", "each", "every", "both", "few", "more", "most",
-      "other", "some", "such", "no", "nor", "only", "own", "same", "so",
-      "than", "too", "very", "just", "if", "then", "also", "about", "up",
+      "the",
+      "a",
+      "an",
+      "and",
+      "or",
+      "but",
+      "in",
+      "on",
+      "at",
+      "to",
+      "for",
+      "of",
+      "with",
+      "by",
+      "from",
+      "is",
+      "it",
+      "as",
+      "be",
+      "was",
+      "were",
+      "are",
+      "been",
+      "being",
+      "have",
+      "has",
+      "had",
+      "do",
+      "does",
+      "did",
+      "will",
+      "would",
+      "could",
+      "should",
+      "may",
+      "might",
+      "shall",
+      "can",
+      "not",
+      "this",
+      "that",
+      "these",
+      "those",
+      "i",
+      "you",
+      "he",
+      "she",
+      "we",
+      "they",
+      "me",
+      "him",
+      "her",
+      "us",
+      "them",
+      "my",
+      "your",
+      "his",
+      "its",
+      "our",
+      "their",
+      "what",
+      "which",
+      "who",
+      "whom",
+      "how",
+      "when",
+      "where",
+      "why",
+      "all",
+      "each",
+      "every",
+      "both",
+      "few",
+      "more",
+      "most",
+      "other",
+      "some",
+      "such",
+      "no",
+      "nor",
+      "only",
+      "own",
+      "same",
+      "so",
+      "than",
+      "too",
+      "very",
+      "just",
+      "if",
+      "then",
+      "also",
+      "about",
+      "up",
     ]);
 
     const words = text
