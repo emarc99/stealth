@@ -181,7 +181,7 @@ function detectRelativeDates(
   );
   if (inDays) {
     const raw = inDays[1];
-    const amount = /^\d+$/.test(raw) ? parseInt(raw, 10) : NUMBER_WORDS[raw] ?? 0;
+    const amount = /^\d+$/.test(raw) ? parseInt(raw, 10) : (NUMBER_WORDS[raw] ?? 0);
     if (amount > 0) {
       signals.push({ type: "relative_date", detail: inDays[0] });
       const resolved = addDaysIso(baseIso, amount);

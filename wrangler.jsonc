@@ -8,21 +8,21 @@
     {
       "binding": "STEALTH_KV",
       "id": "placeholder-prod-id",
-      "preview_id": "placeholder-preview-id"
-    }
+      "preview_id": "placeholder-preview-id",
+    },
   ],
   "durable_objects": {
     "bindings": [
       {
         "name": "STEALTH_COORDINATOR",
-        "class_name": "StealthCoordinator"
-      }
-    ]
+        "class_name": "StealthCoordinator",
+      },
+    ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["StealthCoordinator"]
-    }
-  ]
+      "new_sqlite_classes": ["StealthCoordinator"],
+    },
+  ],
 }
