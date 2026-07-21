@@ -39,8 +39,8 @@ export const Route = createFileRoute("/api/v1/health")({
             status: "ok",
             version: "v1",
             versions: getVersionInfo(),
-          }),
-        ),
+          });
+        }),
     },
   },
 });
