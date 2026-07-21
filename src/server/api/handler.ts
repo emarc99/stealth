@@ -52,7 +52,7 @@ export function createRouteHandler<
 
       // 2. Rate Limiting
       if (config.rateLimit) {
-        const repo = getApiContext().repository;
+        const { repository: repo } = await getApiContext();
         if (config.rateLimit.type === "account") {
           if (!actorId) {
             throw new ApiError(401, "unauthorized", "Account rate limit requires authentication");
