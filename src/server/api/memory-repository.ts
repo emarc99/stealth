@@ -102,11 +102,14 @@ export class MemoryApiRepository implements ApiRepository {
     return this.counters.get(key)?.length ?? 0;
   }
 
-  async incrementCounter(key: string, windowSeconds: number) {
+  async incrementCounter(key: string, windowSeconds: number, amount = 1) {
+    if (!Number.isSafeInteger(amount) || amount < 1) {
+      throw new RangeError("Counter increment amount must be a positive safe integer");
+    }
     const now = Date.now();
     const windowMilliseconds = windowSeconds * 1000;
     const timestamps = this.counters.get(key) ?? [];
-    const filtered = [...timestamps, now].filter(
+    const filtered = [...timestamps, ...Array<number>(amount).fill(now)].filter(
       (timestamp) => now - timestamp <= windowMilliseconds,
     );
     this.counters.set(key, filtered);

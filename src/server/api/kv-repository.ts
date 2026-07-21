@@ -109,8 +109,8 @@ export class HybridApiRepository implements ApiRepository {
     return this.getStub().getCounter(key);
   }
 
-  async incrementCounter(key: string, windowSeconds: number): Promise<number> {
-    return this.getStub().incrementCounter(key, windowSeconds);
+  async incrementCounter(key: string, windowSeconds: number, amount = 1): Promise<number> {
+    return this.getStub().incrementCounter(key, windowSeconds, amount);
   }
 
   // Relay stats stubs matching MemoryApiRepository exactly

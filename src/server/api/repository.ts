@@ -60,7 +60,7 @@ export interface ApiRepository {
   getRelayLastFailedDelivery(relayId: string): Promise<string | null>;
   getRelayDeadLetterCount(relayId: string): Promise<number>;
   getCounter(key: string): Promise<number>;
-  incrementCounter(key: string, windowSeconds: number): Promise<number>;
+  incrementCounter(key: string, windowSeconds: number, amount?: number): Promise<number>;
 }
 
 export const defaultMailboxPolicy: MailboxPolicy = {

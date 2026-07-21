@@ -92,18 +92,23 @@ export class StealthCoordinator extends DurableObjectBase {
     return timestamps.length;
   }
 
-  async incrementCounter(key: string, windowSeconds: number): Promise<number> {
-    const now = Date.now();
-    const windowMilliseconds = windowSeconds * 1000;
-    const timestamps =
-      ((await this.ctx.storage.get(`counter:${key}`)) as number[] | undefined) ?? [];
+  async incrementCounter(key: string, windowSeconds: number, amount = 1): Promise<number> {
+    if (!Number.isSafeInteger(amount) || amount < 1) {
+      throw new RangeError("Counter increment amount must be a positive safe integer");
+    }
 
-    // Filter timestamps falling within the sliding window
-    const filtered = [...timestamps, now].filter(
-      (timestamp) => now - timestamp <= windowMilliseconds,
-    );
+    return this.runExclusive(`counter:${key}`, async () => {
+      const now = Date.now();
+      const windowMilliseconds = windowSeconds * 1000;
+      const timestamps =
+        ((await this.ctx.storage.get(`counter:${key}`)) as number[] | undefined) ?? [];
 
-    await this.ctx.storage.put(`counter:${key}`, filtered);
-    return filtered.length;
+      const filtered = [...timestamps, ...Array<number>(amount).fill(now)].filter(
+        (timestamp) => now - timestamp <= windowMilliseconds,
+      );
+
+      await this.ctx.storage.put(`counter:${key}`, filtered);
+      return filtered.length;
+    });
   }
 }

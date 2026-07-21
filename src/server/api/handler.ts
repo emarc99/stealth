@@ -1,15 +1,13 @@
 import { z } from "zod";
 import { requireActor } from "./actor";
 import { getApiContext } from "./context";
-import { checkAccountLimit, checkIpLimit } from "./abuse-service";
 import { ApiError } from "./errors";
 import { apiFailure, apiSuccess } from "./response";
 import * as metrics from "./metrics";
 import { parseJsonBody } from "./request";
+import { consumeRouteQuota, type RateLimitConfig } from "./rate-limit";
 
-export type RateLimitConfig = {
-  type: "account" | "ip";
-};
+export type { RateLimitConfig } from "./rate-limit";
 
 export type RouteConfig<
   BodySchema extends z.ZodTypeAny,
@@ -53,27 +51,34 @@ export function createRouteHandler<
       // 2. Rate Limiting
       if (config.rateLimit) {
         const { repository: repo } = await getApiContext();
+        let subject: string;
         if (config.rateLimit.type === "account") {
           if (!actorId) {
             throw new ApiError(401, "unauthorized", "Account rate limit requires authentication");
           }
-          const accountLimit = await checkAccountLimit(repo, actorId);
-          if (!accountLimit.allowed) {
-            throw new ApiError(429, "too_many_requests", "Account limit exceeded", {
-              retryAfterSeconds: accountLimit.retryAfterSeconds,
-            });
-          }
-        } else if (config.rateLimit.type === "ip") {
-          const ip =
+          subject = actorId;
+        } else {
+          subject =
             request.headers.get("cf-connecting-ip") ??
             request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
             "unknown";
-          const ipLimit = await checkIpLimit(repo, ip);
-          if (!ipLimit.allowed) {
-            throw new ApiError(429, "too_many_requests", "IP limit exceeded", {
-              retryAfterSeconds: ipLimit.retryAfterSeconds,
-            });
-          }
+        }
+
+        const limit = await consumeRouteQuota(
+          repo,
+          config.rateLimit.type,
+          subject,
+          config.rateLimit.operation,
+        );
+        if (!limit.allowed) {
+          throw new ApiError(
+            429,
+            "too_many_requests",
+            `${config.rateLimit.type === "account" ? "Account" : "IP"} limit exceeded`,
+            {
+              retryAfterSeconds: limit.retryAfterSeconds,
+            },
+          );
         }
       }
 

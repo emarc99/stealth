@@ -118,6 +118,41 @@ describe("createRouteHandler", () => {
     expect(response.status).toBe(401);
   });
 
+  it("exhausts account quota according to the centrally configured operation cost", async () => {
+    const route = createRouteHandler({
+      requireAuth: true,
+      rateLimit: { type: "account", operation: "paymentTransition" },
+      handler: () => new Response("OK"),
+    });
+    const makeRequest = () =>
+      new Request("http://localhost/api/test", {
+        method: "POST",
+        headers: { [ACTOR_HEADER]: "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB" },
+      });
+
+    for (let requestNumber = 0; requestNumber < 5; requestNumber += 1) {
+      await expect(route(makeRequest())).resolves.toMatchObject({ status: 200 });
+    }
+
+    await expect(route(makeRequest())).resolves.toMatchObject({ status: 429 });
+  });
+
+  it("charges simple reads one quota unit", async () => {
+    const route = createRouteHandler({
+      rateLimit: { type: "ip", operation: "read" },
+      handler: () => new Response("OK"),
+    });
+
+    await route(
+      new Request("http://localhost/api/test", {
+        headers: { "cf-connecting-ip": "192.0.2.1" },
+      }),
+    );
+
+    const repository = (globalThis as any).__stealthApiRepository as MemoryApiRepository;
+    await expect(repository.getCounter("abuse:ip:192.0.2.1")).resolves.toBe(1);
+  });
+
   it("adds Cache-Control headers if configured", async () => {
     const handler = createRouteHandler({
       cacheSeconds: 60,
