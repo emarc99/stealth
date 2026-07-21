@@ -103,6 +103,33 @@ export const openApiDocument = {
           },
         },
       },
+      PolicyEvaluationDecision: {
+        type: "object",
+        required: ["allowed", "reasonCode", "message"],
+        additionalProperties: false,
+        properties: {
+          allowed: {
+            type: "boolean",
+            description: "True if the sender is allowed to mail the recipient.",
+          },
+          reasonCode: {
+            type: "string",
+            description: "Stable reason code for the policy outcome.",
+            enum: [
+              "sender_allowed",
+              "sender_blocked",
+              "unknown_senders_disabled",
+              "verification_required",
+              "insufficient_postage",
+              "policy_satisfied",
+            ],
+          },
+          message: {
+            type: "string",
+            description: "Human-readable but non-authoritative explanation of the decision.",
+          },
+        },
+      },
     },
   },
   paths: {
@@ -160,6 +187,16 @@ export const openApiDocument = {
         operationId: "evaluateMailboxPolicy",
         summary: "Evaluate whether a sender can mail a recipient",
         "x-stability": "stable",
+        responses: {
+          "200": {
+            description: "Policy evaluation decision",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/PolicyEvaluationDecision" },
+              },
+            },
+          },
+        },
       },
     },
     "/postage": {
