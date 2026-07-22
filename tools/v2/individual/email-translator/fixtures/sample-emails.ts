@@ -39,7 +39,8 @@ Global Translation Services`,
   },
 
   spanish: {
-    short: "Hola, espero que este correo te encuentre bien. Programemos una reunión la próxima semana.",
+    short:
+      "Hola, espero que este correo te encuentre bien. Programemos una reunión la próxima semana.",
     medium: `Estimado equipo,
 
 Quería dar seguimiento a nuestra discusión de la reunión de ayer. Necesitamos finalizar el cronograma del proyecto y asignar responsabilidades para cada entregable.
@@ -51,7 +52,8 @@ Juan`,
   },
 
   french: {
-    short: "Bonjour, j'espère que ce courriel vous trouve bien. Planifions une réunion la semaine prochaine.",
+    short:
+      "Bonjour, j'espère que ce courriel vous trouve bien. Planifions une réunion la semaine prochaine.",
     medium: `Cher équipe,
 
 Je voulais faire un suivi sur notre discussion de la réunion d'hier. Nous devons finaliser le calendrier du projet et attribuer les responsabilités pour chaque livrable.
@@ -63,11 +65,13 @@ Jean`,
   },
 
   german: {
-    short: "Hallo, ich hoffe, diese E-Mail findet Sie wohlauf. Lassen Sie uns nächste Woche ein Treffen vereinbaren.",
+    short:
+      "Hallo, ich hoffe, diese E-Mail findet Sie wohlauf. Lassen Sie uns nächste Woche ein Treffen vereinbaren.",
   },
 
   japanese: {
-    short: "こんにちは、このメールがあなたを元気に見つけることを願っています。来週会議を予定しましょう。",
+    short:
+      "こんにちは、このメールがあなたを元気に見つけることを願っています。来週会議を予定しましょう。",
   },
 
   chinese: {
