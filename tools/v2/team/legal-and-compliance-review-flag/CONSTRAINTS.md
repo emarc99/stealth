@@ -26,9 +26,9 @@ As this tool will process data sourced from potentially untrusted or highly comp
 ## Performance Notes
 
 1. **Large Emails and Attachments**
-   - The flag service does *not* read the entire email body or parse attachments. It only operates on the opaque `targetResource` identifier (e.g. `mail:thread:abc`).
+   - The flag service does _not_ read the entire email body or parse attachments. It only operates on the opaque `targetResource` identifier (e.g. `mail:thread:abc`).
    - Resolving what `targetResource` points to is delegated to the downstream `ReviewFlagDependency.resourceExists()`. The main mail app must implement this check efficiently, ideally using indexed database lookups, without fetching the entire email blob or attachment contents into memory.
 
 2. **Large Teams and Histories**
    - We avoid unbounded work by truncating or rejecting arbitrarily large arrays (like `evidenceRefs`).
-   - The tool does not load the entire review history for a resource. The dependency `findExistingFlag()` should only query for the *presence* of an open flag (e.g., `LIMIT 1` query) rather than returning all historical flags.
+   - The tool does not load the entire review history for a resource. The dependency `findExistingFlag()` should only query for the _presence_ of an open flag (e.g., `LIMIT 1` query) rather than returning all historical flags.
