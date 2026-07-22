@@ -1,26 +1,57 @@
 import { stellarAddressSchema } from "./domain";
 import { ApiError } from "./errors";
+import { assertActorAuthorized, type DelegatedAuthorization } from "./auth/delegation";
+import { extractPrincipal, type ApiContext, type ApiPrincipal } from "./context";
 
 export const ACTOR_HEADER = "x-stealth-address";
+export const DELEGATION_HEADER = "x-stealth-delegation";
 
-export function requireActor(request: Request) {
-  const value = request.headers.get(ACTOR_HEADER);
-  if (!value) {
+export function requirePrincipal(requestOrContext: Request | ApiContext): ApiPrincipal {
+  if (
+    requestOrContext &&
+    typeof requestOrContext === "object" &&
+    "isAuthenticated" in requestOrContext
+  ) {
+    if (!requestOrContext.isAuthenticated || !requestOrContext.principal) {
+      throw new ApiError(401, "unauthorized", `Missing ${ACTOR_HEADER} header`);
+    }
+    return requestOrContext.principal;
+  }
+
+  const principal = extractPrincipal(requestOrContext as Request);
+  if (!principal) {
     throw new ApiError(401, "unauthorized", `Missing ${ACTOR_HEADER} header`);
   }
-
-  const result = stellarAddressSchema.safeParse(value);
-  if (!result.success) {
-    throw new ApiError(401, "unauthorized", `${ACTOR_HEADER} must be a valid Stellar G-address`);
-  }
-
-  return result.data;
+  return principal;
 }
 
-export function requireActorMatches(request: Request, expectedAddress: string) {
-  const actor = requireActor(request);
-  if (actor !== expectedAddress) {
-    throw new ApiError(403, "forbidden", "The authenticated actor cannot modify this resource");
+export function requireActor(requestOrContext: Request | ApiContext): string {
+  const principal = requirePrincipal(requestOrContext);
+  return principal.address;
+}
+
+export function parseDelegationHeader(
+  request: Request,
+  action: string,
+  resource: string,
+): DelegatedAuthorization | undefined {
+  const value = request.headers.get(DELEGATION_HEADER);
+  if (!value) return undefined;
+
+  try {
+    const parsed = JSON.parse(value);
+    const delegations = Array.isArray(parsed) ? parsed : [parsed];
+    return { action, resource, delegations };
+  } catch {
+    return undefined;
   }
-  return actor;
+}
+
+export function requireActorMatches(
+  requestOrContext: Request | ApiContext,
+  expectedAddress: string,
+  authorization?: DelegatedAuthorization,
+) {
+  const actor = requireActor(requestOrContext);
+  return assertActorAuthorized(actor, expectedAddress, authorization);
 }
