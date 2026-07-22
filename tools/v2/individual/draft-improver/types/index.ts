@@ -1,5 +1,3 @@
-export { DraftImproverTool } from "./components";
-export { analyzeDraft, validateDraftInput, sanitizeDraft, parseDraft } from "./services";
 export type {
   DraftImprovementResult,
   DraftImproverServiceOptions,
@@ -13,4 +11,4 @@ export type {
   DraftScore,
   ParsedDraft,
   SanitizedDraft,
-} from "./types";
+} from "./draft";
