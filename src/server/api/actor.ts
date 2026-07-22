@@ -1,22 +1,29 @@
 import { stellarAddressSchema } from "./domain";
 import { ApiError } from "./errors";
 import { assertActorAuthorized, type DelegatedAuthorization } from "./auth/delegation";
+import { extractPrincipal, type ApiContext, type ApiPrincipal } from "./context";
 
 export const ACTOR_HEADER = "x-stealth-address";
 export const DELEGATION_HEADER = "x-stealth-delegation";
 
-export function requireActor(request: Request) {
-  const value = request.headers.get(ACTOR_HEADER);
-  if (!value) {
+export function requirePrincipal(requestOrContext: Request | ApiContext): ApiPrincipal {
+  if (requestOrContext && typeof requestOrContext === "object" && "isAuthenticated" in requestOrContext) {
+    if (!requestOrContext.isAuthenticated || !requestOrContext.principal) {
+      throw new ApiError(401, "unauthorized", `Missing ${ACTOR_HEADER} header`);
+    }
+    return requestOrContext.principal;
+  }
+
+  const principal = extractPrincipal(requestOrContext as Request);
+  if (!principal) {
     throw new ApiError(401, "unauthorized", `Missing ${ACTOR_HEADER} header`);
   }
+  return principal;
+}
 
-  const result = stellarAddressSchema.safeParse(value);
-  if (!result.success) {
-    throw new ApiError(401, "unauthorized", `${ACTOR_HEADER} must be a valid Stellar G-address`);
-  }
-
-  return result.data;
+export function requireActor(requestOrContext: Request | ApiContext): string {
+  const principal = requirePrincipal(requestOrContext);
+  return principal.address;
 }
 
 export function parseDelegationHeader(
@@ -37,10 +44,10 @@ export function parseDelegationHeader(
 }
 
 export function requireActorMatches(
-  request: Request,
+  requestOrContext: Request | ApiContext,
   expectedAddress: string,
   authorization?: DelegatedAuthorization,
 ) {
-  const actor = requireActor(request);
+  const actor = requireActor(requestOrContext);
   return assertActorAuthorized(actor, expectedAddress, authorization);
 }

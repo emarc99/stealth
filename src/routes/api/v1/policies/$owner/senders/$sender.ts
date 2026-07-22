@@ -15,19 +15,21 @@ export const Route = createFileRoute("/api/v1/policies/$owner/senders/$sender")(
     handlers: {
       GET: ({ request, params }) =>
         handleApiRequest(request, async () => {
+          const context = await getApiContext(request);
           const owner = stellarAddressSchema.parse(params.owner);
           const sender = stellarAddressSchema.parse(params.sender);
           return apiSuccess(
             request,
-            await getSenderRule((await getApiContext()).repository, owner, sender),
+            await getSenderRule(context.repository, owner, sender),
           );
         }),
       PUT: ({ request, params }) =>
         handleApiRequest(request, async () => {
+          const context = await getApiContext(request);
           const owner = stellarAddressSchema.parse(params.owner);
           const sender = stellarAddressSchema.parse(params.sender);
           requireActorMatches(
-            request,
+            context,
             owner,
             parseDelegationHeader(
               request,
@@ -38,15 +40,16 @@ export const Route = createFileRoute("/api/v1/policies/$owner/senders/$sender")(
           const { rule } = await parseJsonBody(request, ruleBodySchema);
           return apiSuccess(
             request,
-            await setSenderRule((await getApiContext()).repository, owner, sender, rule),
+            await setSenderRule(context.repository, owner, sender, rule),
           );
         }),
       DELETE: ({ request, params }) =>
         handleApiRequest(request, async () => {
+          const context = await getApiContext(request);
           const owner = stellarAddressSchema.parse(params.owner);
           const sender = stellarAddressSchema.parse(params.sender);
           requireActorMatches(
-            request,
+            context,
             owner,
             parseDelegationHeader(
               request,
@@ -56,7 +59,7 @@ export const Route = createFileRoute("/api/v1/policies/$owner/senders/$sender")(
           );
           return apiSuccess(
             request,
-            await setSenderRule((await getApiContext()).repository, owner, sender, "default"),
+            await setSenderRule(context.repository, owner, sender, "default"),
           );
         }),
     },
