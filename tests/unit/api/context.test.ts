@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { ACTOR_HEADER, requireActor, requireActorMatches, requirePrincipal } from "../../src/server/api/actor";
+import {
+  ACTOR_HEADER,
+  requireActor,
+  requireActorMatches,
+  requirePrincipal,
+} from "../../src/server/api/actor";
 import {
   createApiContext,
   extractPrincipal,

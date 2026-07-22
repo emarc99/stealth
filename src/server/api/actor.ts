@@ -7,7 +7,11 @@ export const ACTOR_HEADER = "x-stealth-address";
 export const DELEGATION_HEADER = "x-stealth-delegation";
 
 export function requirePrincipal(requestOrContext: Request | ApiContext): ApiPrincipal {
-  if (requestOrContext && typeof requestOrContext === "object" && "isAuthenticated" in requestOrContext) {
+  if (
+    requestOrContext &&
+    typeof requestOrContext === "object" &&
+    "isAuthenticated" in requestOrContext
+  ) {
     if (!requestOrContext.isAuthenticated || !requestOrContext.principal) {
       throw new ApiError(401, "unauthorized", `Missing ${ACTOR_HEADER} header`);
     }
