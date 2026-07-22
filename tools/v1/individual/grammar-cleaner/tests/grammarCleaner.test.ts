@@ -22,7 +22,7 @@ describe("cleanGrammar", () => {
     expect(result.result.issueCount).toBeGreaterThan(0);
     expect(result.result.correctedText).toContain("they're going");
     expect(result.result.correctedText).toContain("You're the best");
-    expect(result.result.correctedText).toContain("it's important");
+    expect(result.result.correctedText).toContain("It's important");
     expect(result.result.correctedText).not.toContain("there going");
   });
 

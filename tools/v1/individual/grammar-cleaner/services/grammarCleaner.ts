@@ -65,7 +65,7 @@ const HOMOPHONE_RULES: ReplacementRule[] = [
   {
     pattern:
       /\bits\s+(?!own|base|surface|size|shape|color|name|purpose|function|status|value|type|role|job|turn|best|worst|own|way)\b(?!(?:not|been|being|also|still|already|always|often|just|only|even|never|ever|all|both|each|every|some|any|no|the|a|an)\b)/gi,
-    replacement: "it's",
+    replacement: "it's ",
     type: "spelling",
     explanation: "Use 'it's' as a contraction of 'it is' or 'it has'.",
   },
