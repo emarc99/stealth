@@ -22,7 +22,21 @@ interface ErrorEnvelope {
   meta: ApiMeta;
 }
 
+export const CACHE_POLICIES = {
+  NO_STORE: "no-store",
+  PUBLIC_5_MINUTES: "public, max-age=300",
+  PUBLIC_IMMUTABLE: "public, max-age=31536000, immutable",
+  PUBLIC_REVALIDATE: "public, max-age=0, must-revalidate",
+} as const;
+
+export const JSON_SECURITY_HEADERS = {
+  "x-content-type-options": "nosniff",
+} as const;
+
+type CachePolicy = keyof typeof CACHE_POLICIES;
+
 interface ResponseOptions {
+  cachePolicy?: CachePolicy;
   headers?: HeadersInit;
   status?: number;
 }
@@ -31,11 +45,27 @@ function getRequestId(request: Request) {
   return request.headers.get("x-request-id")?.trim() || crypto.randomUUID();
 }
 
-function responseHeaders(requestId: string, headers?: HeadersInit) {
+function responseHeaders(
+  requestId: string,
+  headers?: HeadersInit,
+  cachePolicy: CachePolicy = "NO_STORE",
+) {
   const result = new Headers(headers);
-  result.set("cache-control", "no-store");
+  const cacheControl = CACHE_POLICIES[cachePolicy];
+  const suppliedCacheControl = result.get("cache-control");
+
+  if (suppliedCacheControl !== null && suppliedCacheControl !== cacheControl) {
+    throw new TypeError(
+      "Cache-Control must be configured with a named cache policy; conflicting directives are not allowed",
+    );
+  }
+
+  result.set("cache-control", cacheControl);
   result.set("content-type", "application/json; charset=utf-8");
   result.set("x-request-id", requestId);
+  for (const [name, value] of Object.entries(JSON_SECURITY_HEADERS)) {
+    result.set(name, value);
+  }
   return result;
 }
 
@@ -46,13 +76,41 @@ function meta(requestId: string): ApiMeta {
   };
 }
 
+function enforceJsonSecurityHeaders(response: Response) {
+  const contentType = response.headers.get("content-type")?.toLowerCase();
+  if (!contentType?.includes("application/json")) {
+    return response;
+  }
+
+  const securedResponse = new Response(response.body, response);
+  for (const [name, value] of Object.entries(JSON_SECURITY_HEADERS)) {
+    securedResponse.headers.set(name, value);
+  }
+  return securedResponse;
+}
+
 export function apiSuccess<T>(request: Request, data: T, options: ResponseOptions = {}) {
   const requestId = getRequestId(request);
   const body: SuccessEnvelope<T> = { data, meta: meta(requestId) };
 
+  return jsonResponse(requestId, body, {
+    status: options.status ?? 200,
+    headers: options.headers,
+    cachePolicy: options.cachePolicy,
+  });
+}
+
+export function jsonResponse(
+  requestOrRequestId: Request | string,
+  body: unknown,
+  options: ResponseOptions = {},
+) {
+  const requestId =
+    typeof requestOrRequestId === "string" ? requestOrRequestId : getRequestId(requestOrRequestId);
+
   return new Response(JSON.stringify(body), {
     status: options.status ?? 200,
-    headers: responseHeaders(requestId, options.headers),
+    headers: responseHeaders(requestId, options.headers, options.cachePolicy),
   });
 }
 
@@ -87,10 +145,10 @@ export async function handleApiRequest(
   handler: () => Response | Promise<Response>,
 ) {
   try {
-    return await handler();
+    return enforceJsonSecurityHeaders(await handler());
   } catch (error) {
     return apiFailure(request, error);
   }
 }
 
-export type { ApiMeta, ErrorEnvelope, ResponseOptions, SuccessEnvelope };
+export type { ApiMeta, CachePolicy, ErrorEnvelope, ResponseOptions, SuccessEnvelope };
