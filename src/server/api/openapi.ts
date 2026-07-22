@@ -1,3 +1,5 @@
+import { API_ERROR_CODES, API_ERROR_REGISTRY } from "./errors";
+
 export const openApiDocument = {
   openapi: "3.1.0",
   info: {
@@ -74,7 +76,8 @@ export const openApiDocument = {
           code: {
             type: "string",
             description: "Stable domain error code.",
-            example: "bad_request",
+            enum: API_ERROR_CODES,
+            example: "invalid_state_transition",
           },
           message: {
             type: "string",
@@ -204,6 +207,7 @@ export const openApiDocument = {
               code: {
                 type: "string",
                 description: "Stable domain-specific error code.",
+                enum: API_ERROR_CODES,
               },
               message: {
                 type: "string",
@@ -236,6 +240,12 @@ export const openApiDocument = {
             },
           },
         },
+      },
+      ApiErrorRegistry: {
+        type: "object",
+        description:
+          "Stable error-code metadata. This schema is generated from the runtime registry.",
+        "x-error-registry": API_ERROR_REGISTRY,
       },
     },
   },
