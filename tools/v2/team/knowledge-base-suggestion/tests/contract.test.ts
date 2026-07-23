@@ -74,4 +74,66 @@ describe("kb contract — suggest", () => {
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.error).toBe(KbErrorCode.InvalidInput);
   });
+
+  it("rejects a query exceeding max length", () => {
+    const contract = makeContract();
+    const res = contract.execute(
+      { operation: "suggest", input: { query: "a".repeat(256) } },
+      KB_ARTICLES,
+    );
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.error).toBe(KbErrorCode.InvalidInput);
+      expect(res.message).toMatch(/query too long/);
+    }
+  });
+
+  it("rejects a limit out of bounds", () => {
+    const contract = makeContract();
+    const res = contract.execute(
+      { operation: "suggest", input: { query: "billing", limit: 150 } },
+      KB_ARTICLES,
+    );
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.error).toBe(KbErrorCode.InvalidInput);
+      expect(res.message).toMatch(/limit must be/);
+    }
+  });
+
+  it("rejects a corpus that is too large", () => {
+    const contract = makeContract();
+    const massiveCorpus = new Array(10001).fill(KB_ARTICLES[0]);
+    const res = contract.execute(
+      { operation: "suggest", input: { query: "billing" } },
+      massiveCorpus,
+    );
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.error).toBe(KbErrorCode.InvalidInput);
+      expect(res.message).toMatch(/corpus too large/);
+    }
+  });
+
+  it("HTML escapes title and summary to prevent XSS", () => {
+    const contract = makeContract();
+    const maliciousCorpus = [
+      {
+        id: "evil-1",
+        title: "<script>alert(1)</script>",
+        summary: 'Read about & and "quotes"',
+        tags: ["evil", "xss"],
+      },
+    ];
+    const res = contract.execute(
+      { operation: "suggest", input: { query: "evil xss" } },
+      maliciousCorpus,
+    );
+    expect(res.ok).toBe(true);
+    if (res.ok && res.value.operation === "suggest") {
+      const suggestion = res.value.suggestions[0];
+      expect(suggestion.title).toBe("&lt;script&gt;alert(1)&lt;/script&gt;");
+      expect(suggestion.summary).toBe("Read about &amp; and &quot;quotes&quot;");
+    }
+  });
 });

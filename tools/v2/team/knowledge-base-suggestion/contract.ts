@@ -46,12 +46,23 @@ export function fail<T = never>(error: KbErrorCode, message: string): KbResult<T
   return { ok: false, error, message };
 }
 
+/** Escapes HTML special characters to prevent XSS. */
+export function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 /** Tokenize a query into lowercase alphanumeric terms. */
 export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
     .split(/[^a-z0-9]+/i)
-    .filter((t) => t.length > 0);
+    .filter((t) => t.length > 0)
+    .slice(0, 50); // Cap tokens to prevent CPU exhaustion
 }
 
 /**
@@ -74,8 +85,8 @@ export function suggestKb(query: string, corpus: KbArticle[], limit = 5): KbSugg
     if (score > 0) {
       scored.push({
         articleId: article.id,
-        title: article.title,
-        summary: article.summary,
+        title: escapeHtml(article.title),
+        summary: article.summary ? escapeHtml(article.summary) : undefined,
         score,
       });
     }
@@ -87,7 +98,14 @@ export function suggestKb(query: string, corpus: KbArticle[], limit = 5): KbSugg
 /** Validate inputs before scoring. */
 export function validateSuggest(input: SuggestInput, corpus: KbArticle[]): string | null {
   if (!Array.isArray(corpus)) return "corpus must be an array";
+  if (corpus.length > 10000) return "corpus too large (max 10000)";
   if (!input || typeof input.query !== "string" || input.query.trim().length === 0)
     return "query is required";
+  if (input.query.length > 255) return "query too long (max 255 characters)";
+  if (
+    input.limit !== undefined &&
+    (typeof input.limit !== "number" || input.limit < 1 || input.limit > 100)
+  )
+    return "limit must be a number between 1 and 100";
   return null;
 }
