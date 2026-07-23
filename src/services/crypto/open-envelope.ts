@@ -120,6 +120,19 @@ function str(value: unknown, field: string): string {
   return value;
 }
 
+function num(value: unknown, field: string): number {
+  if (typeof value === "number" && !Number.isNaN(value) && value >= 0) {
+    return value;
+  }
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    if (!Number.isNaN(parsed) && parsed >= 0) {
+      return parsed;
+    }
+  }
+  throw new OpenEnvelopeError(`missing or invalid ${field}`, "crypto_validation_error");
+}
+
 /**
  * Open (decrypt) a sealed envelope.
  *
@@ -221,9 +234,7 @@ export async function openEnvelope(
             (a as { content_type?: unknown }).content_type,
             "attachment.content_type",
           ),
-          size_bytes: Number(
-            str((a as { size_bytes?: unknown }).size_bytes, "attachment.size_bytes"),
-          ),
+          size_bytes: num((a as { size_bytes?: unknown }).size_bytes, "attachment.size_bytes"),
           content_hash: str(
             (a as { content_hash?: unknown }).content_hash,
             "attachment.content_hash",

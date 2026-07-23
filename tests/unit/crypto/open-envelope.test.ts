@@ -6,6 +6,7 @@ import {
   type KeyProvider,
 } from "../../../src/services/crypto/open-envelope";
 import { createCommitment } from "../../../src/services/crypto/commitment";
+import { canonicalizeAttachmentDescriptors } from "../../../src/services/crypto/attachment-metadata";
 
 function toBase64(bytes: Uint8Array): string {
   let binary = "";
@@ -23,7 +24,14 @@ function toHex(bytes: Uint8Array): string {
 async function buildEnvelope(body: string, key: CryptoKey, recipient: string) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const plaintext = new TextEncoder().encode(body);
-  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext));
+  const aad = canonicalizeAttachmentDescriptors([]);
+  const ct = new Uint8Array(
+    await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv, additionalData: aad as BufferSource },
+      key,
+      plaintext,
+    ),
+  );
   const tag = ct.slice(ct.length - 16);
   const ciphertextWithTag = ct; // GCM output already includes the tag
   const commitment = await createCommitment(ciphertextWithTag);
