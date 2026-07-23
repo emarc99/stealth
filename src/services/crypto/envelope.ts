@@ -14,6 +14,8 @@ export interface EnvelopeAttachment {
   content_type: string;
   size_bytes: number;
   content_hash: string;
+  encryption_metadata?: EncryptionMetadata;
+  ciphertext?: string;
 }
 
 export interface EncryptionMetadata {
@@ -127,13 +129,30 @@ export async function sealEnvelope(input: SealEnvelopeInput): Promise<SealedEnve
   const attachments: EnvelopeAttachment[] = [];
   for (const attachment of input.attachments ?? []) {
     let hash: string;
+    let encMetadata: EncryptionMetadata | undefined;
+    let ciphertextStr: string | undefined;
+
     if (attachment.data) {
-      hash = await sha256Hex(new Uint8Array(attachment.data));
+      const dataBytes = new Uint8Array(attachment.data);
+      hash = await sha256Hex(dataBytes);
       if (attachment.content_hash && hash !== attachment.content_hash) {
         throw new Error(
           `Mismatch between supplied bytes and content_hash for attachment ${attachment.filename}`,
         );
       }
+
+      const attIv = crypto.getRandomValues(new Uint8Array(12));
+      const attCiphertext = new Uint8Array(
+        await crypto.subtle.encrypt({ name: "AES-GCM", iv: attIv }, key, dataBytes),
+      );
+      const attTag = attCiphertext.slice(attCiphertext.length - GCM_TAG_BYTES);
+
+      encMetadata = {
+        algorithm: "AES-256-GCM",
+        nonce: toHex(attIv),
+        mac: toHex(attTag),
+      };
+      ciphertextStr = toBase64(attCiphertext);
     } else if (attachment.content_hash) {
       hash = attachment.content_hash;
     } else {
@@ -146,6 +165,8 @@ export async function sealEnvelope(input: SealEnvelopeInput): Promise<SealedEnve
       content_type: attachment.content_type,
       size_bytes: attachment.size_bytes,
       content_hash: hash,
+      ...(encMetadata ? { encryption_metadata: encMetadata } : {}),
+      ...(ciphertextStr ? { ciphertext: ciphertextStr } : {}),
     });
   }
 

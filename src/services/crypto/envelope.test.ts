@@ -29,6 +29,11 @@ describe("services/crypto/envelope", () => {
     });
     expect(result.payload.attachments).toHaveLength(1);
     expect(result.payload.attachments[0].content_hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(result.payload.attachments[0].ciphertext).toBeDefined();
+    expect(result.payload.attachments[0].encryption_metadata).toBeDefined();
+    expect(result.payload.attachments[0].encryption_metadata?.algorithm).toBe("AES-256-GCM");
+    expect(result.payload.attachments[0].encryption_metadata?.nonce).toMatch(/^[0-9a-f]{24}$/);
+    expect(result.payload.attachments[0].encryption_metadata?.mac).toMatch(/^[0-9a-f]{32}$/);
   });
 
   it("should successfully seal an envelope with an attachment providing only content_hash", async () => {
@@ -46,6 +51,8 @@ describe("services/crypto/envelope", () => {
     });
     expect(result.payload.attachments).toHaveLength(1);
     expect(result.payload.attachments[0].content_hash).toBe(dummyHash);
+    expect(result.payload.attachments[0].ciphertext).toBeUndefined();
+    expect(result.payload.attachments[0].encryption_metadata).toBeUndefined();
   });
 
   it("should fail when neither data nor content_hash is provided for an attachment", async () => {
@@ -101,5 +108,7 @@ describe("services/crypto/envelope", () => {
     });
     expect(result.payload.attachments).toHaveLength(1);
     expect(result.payload.attachments[0].content_hash).toBe(validHash);
+    expect(result.payload.attachments[0].ciphertext).toBeDefined();
+    expect(result.payload.attachments[0].encryption_metadata).toBeDefined();
   });
 });
