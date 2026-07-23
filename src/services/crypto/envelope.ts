@@ -23,6 +23,8 @@ export interface EncryptionMetadata {
   nonce: string;
   mac: string;
   ephemeral_public_key?: string;
+  recipient_key_id?: string;
+  sender_key_id?: string;
 }
 
 export interface EnvelopePayload {
@@ -51,6 +53,8 @@ export interface SealEnvelopeInput {
     data?: ArrayBuffer;
     content_hash?: string;
   }>;
+  recipientKeyId?: string;
+  senderKeyId?: string;
 }
 
 const GCM_TAG_BYTES = 16;
@@ -179,6 +183,8 @@ export async function sealEnvelope(input: SealEnvelopeInput): Promise<SealedEnve
       algorithm: "AES-256-GCM",
       nonce: toHex(iv),
       mac: toHex(tag),
+      ...(input.recipientKeyId ? { recipient_key_id: input.recipientKeyId } : {}),
+      ...(input.senderKeyId ? { sender_key_id: input.senderKeyId } : {}),
     },
     content_commitment: await sha256Hex(ciphertext),
     attachments,

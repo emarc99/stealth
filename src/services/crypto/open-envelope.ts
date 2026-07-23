@@ -36,7 +36,7 @@ export class OpenEnvelopeError extends Error {
 
 /** Supplies the recipient's AES-GCM key for decryption (integration-owned). */
 export interface KeyProvider {
-  resolveKey(recipient: string): Promise<CryptoKey>;
+  resolveKey(recipient: string, recipientKeyId?: string): Promise<CryptoKey>;
 }
 
 const GCM_TAG_BYTES = 16;
@@ -53,6 +53,8 @@ export interface OpenedEnvelope {
     size_bytes: number;
     content_hash: string;
   }>;
+  recipientKeyId?: string;
+  senderKeyId?: string;
 }
 
 /** Shape we accept (structural — we validate fields individually). */
@@ -66,6 +68,8 @@ interface RawPayload {
     nonce?: unknown;
     mac?: unknown;
     ephemeral_public_key?: unknown;
+    recipient_key_id?: unknown;
+    sender_key_id?: unknown;
   };
   content_commitment?: unknown;
   attachments?: unknown;
@@ -180,10 +184,13 @@ export async function openEnvelope(
     throw new OpenEnvelopeError("auth tag mismatch", "crypto_integrity_error");
   }
 
+  const recipientKeyId = meta.recipient_key_id !== undefined ? str(meta.recipient_key_id, "recipient_key_id") : undefined;
+  const senderKeyId = meta.sender_key_id !== undefined ? str(meta.sender_key_id, "sender_key_id") : undefined;
+
   // 4) Resolve recipient key and decrypt (fail closed on any mismatch).
   let key: CryptoKey;
   try {
-    key = await keys.resolveKey(recipient);
+    key = await keys.resolveKey(recipient, recipientKeyId);
   } catch {
     throw new OpenEnvelopeError("recipient key unavailable", "crypto_decryption_error");
   }
@@ -225,7 +232,15 @@ export async function openEnvelope(
       }))
     : [];
 
-  return { sender, recipient, timestamp, body, attachments };
+  return {
+    sender,
+    recipient,
+    timestamp,
+    body,
+    attachments,
+    ...(recipientKeyId ? { recipientKeyId } : {}),
+    ...(senderKeyId ? { senderKeyId } : {}),
+  };
 }
 
 /** Constant-time byte comparison (no early-exit timing leak). */
