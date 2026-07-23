@@ -1,4 +1,7 @@
+export { EmailOwnershipTracker } from "./components";
+
 export { sortOwnershipEvents, trackOwnership } from "./services";
+
 export type {
   ActorId,
   OwnershipAction,

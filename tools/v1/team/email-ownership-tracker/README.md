@@ -70,3 +70,32 @@ anomaly instead of throwing, so a caller can surface it for manual review:
 - Ownership identity resolution and permissions are deferred to a future
   integration issue.
 - All fixture data is synthetic and uses the reserved .test suffix.
+
+## UI & Accessibility Surface
+
+The UI for this tool is implemented entirely inside this folder.
+
+It provides:
+
+- Ownership history summary
+- Ownership event list
+- Empty state
+- Loading state
+- Error state
+- Success state
+
+The UI is isolated and is not connected to the main application.
+
+Keyboard navigation, accessible labels, focus indicators, and screen reader support are included.
+
+Future integration into the mail application should be completed in a dedicated integration issue.
+
+## Additional Documentation
+
+The following documents are provided for reviewers:
+
+- docs/ACCESSIBILITY.md
+- docs/VISUAL_STYLE.md
+- docs/TEST_PLAN.md
+- docs/REVIEW_NOTES.md
+- docs/SECURITY_AND_PERFORMANCE.md
