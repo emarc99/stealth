@@ -281,7 +281,7 @@ describe("abuse service", () => {
 
   it("treats proof-failure counter read timeouts as fail closed", async () => {
     class TimeoutRepository extends FailingAbuseRepository {
-      override async getCounter(key: string) {
+      override async getCounter(key: string): Promise<number> {
         const error = new Error(`counter timeout: ${key}`);
         error.name = "TimeoutError";
         throw error;

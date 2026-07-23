@@ -50,14 +50,16 @@ This header only preserves authorization boundaries during development. It is no
 Production must derive the actor from a verified wallet challenge or signed session and must ignore
 caller-supplied identity headers at the public edge.
 
-## Health checks
+### Authentication challenge validity
 
-`GET /api/v1/health` is a liveness check. It only confirms that the worker can respond and does not
-depend on external storage or optional integrations.
+Signed authentication challenges are valid for five minutes by default, with 30 seconds of
+client/server clock-skew tolerance on both ends of the window. Deployments can change these values
+with `STEALTH_AUTH_CHALLENGE_LIFETIME_MS` and `STEALTH_AUTH_CLOCK_SKEW_MS`; both values are integer
+milliseconds. The complete configuration rules are documented in [`src/config/README.md`](../../src/config/README.md).
 
-`GET /api/v1/health?check=readiness` is a readiness check. It verifies required API dependencies
-with bounded timeouts and returns only sanitized dependency states, not binding names, connection
-details, or error messages. A failed readiness check returns `503`.
+Challenges older than the configured window fail with the machine-readable error code
+`expired_challenge`. Challenges dated farther into the future than the allowed skew fail with
+`challenge_not_yet_valid`. Both errors use HTTP 422 and the standard API error envelope.
 
 ### Authentication nonce lifecycle
 
