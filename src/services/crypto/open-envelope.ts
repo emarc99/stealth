@@ -202,7 +202,8 @@ export async function openEnvelope(
     }
 
     // 4) Resolve recipient key and decrypt (fail closed on any mismatch).
-    const recipientKeyId = typeof meta.recipient_key_id === "string" ? meta.recipient_key_id : undefined;
+    const recipientKeyId =
+      typeof meta.recipient_key_id === "string" ? meta.recipient_key_id : undefined;
     const senderKeyId = typeof meta.sender_key_id === "string" ? meta.sender_key_id : undefined;
 
     let key: CryptoKey;
