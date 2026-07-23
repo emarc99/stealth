@@ -47,7 +47,9 @@ describe("crypto error taxonomy (#1690)", () => {
   });
 
   it("redacts high-entropy hex and base64 from details", () => {
-    const details = redact("key=deadbeefdeadbeefdeadbeefdeadbeef and b64=QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIz");
+    const details = redact(
+      "key=deadbeefdeadbeefdeadbeefdeadbeef and b64=QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIz",
+    );
     expect(details).not.toContain("deadbeef");
     expect(details).toContain("[redacted-hex]");
     expect(details).toContain("[redacted-b64]");
@@ -89,10 +91,7 @@ describe("crypto error taxonomy (#1690)", () => {
   });
 
   it("toCryptoError coerces a known code marker", () => {
-    const mapped = toCryptoError(
-      new Error("crypto_signature_error"),
-      "crypto_decrypt_error",
-    );
+    const mapped = toCryptoError(new Error("crypto_signature_error"), "crypto_decrypt_error");
     expect(mapped.code).toBe("crypto_signature_error");
   });
 

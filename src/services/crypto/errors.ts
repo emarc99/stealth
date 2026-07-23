@@ -61,9 +61,7 @@ export const CRYPTO_ERROR_REGISTRY: Record<CryptoErrorCode, CryptoErrorDefinitio
   },
 };
 
-const CRYPTO_ERROR_CODES = Object.freeze(
-  Object.keys(CRYPTO_ERROR_REGISTRY) as CryptoErrorCode[],
-);
+const CRYPTO_ERROR_CODES = Object.freeze(Object.keys(CRYPTO_ERROR_REGISTRY) as CryptoErrorCode[]);
 
 /**
  * Error thrown for any recoverable failure at the crypto boundary.
@@ -139,9 +137,7 @@ function asCryptoCode(value: string): CryptoErrorCode {
  * Typed result helpers: a union that lets callers branch on `ok` instead of
  * catching and parsing message text.
  */
-export type CryptoResult<T> =
-  | { ok: true; value: T }
-  | { ok: false; error: CryptoError };
+export type CryptoResult<T> = { ok: true; value: T } | { ok: false; error: CryptoError };
 
 export function cryptoOk<T>(value: T): CryptoResult<T> {
   return { ok: true, value };
