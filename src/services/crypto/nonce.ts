@@ -6,9 +6,35 @@
  *
  * Production always uses `crypto.getRandomValues`. A deterministic generator
  * can be injected for tests only; it must never be used in production paths.
+ *
+ * This module is intentionally self-contained: it defines its own minimal,
+ * non-secret error and result types so it does not depend on sibling crypto
+ * modules that may land in separate PRs.
  */
 
-import { CryptoError, cryptoFail, cryptoOk, type CryptoResult } from "./errors";
+/** Stable, non-secret failure codes for nonce operations. */
+export type NonceErrorCode = "crypto_algorithm_error" | "crypto_validation_error";
+
+/** Minimal non-secret error carrying a stable code (no key/plaintext leakage). */
+export class NonceError extends Error {
+  readonly code: NonceErrorCode;
+  constructor(code: NonceErrorCode, message: string) {
+    super(message);
+    this.name = "NonceError";
+    this.code = code;
+  }
+}
+
+/** Typed result so callers branch on `ok` instead of catching and parsing text. */
+export type NonceResult<T> = { ok: true; value: T } | { ok: false; error: NonceError };
+
+function nonceOk<T>(value: T): NonceResult<T> {
+  return { ok: true, value };
+}
+
+function nonceFail<T = never>(error: NonceError): NonceResult<T> {
+  return { ok: false, error };
+}
 
 /** Algorithm suites and the nonce length (in bytes) each expects. */
 export const NONCE_LENGTHS = {
@@ -37,7 +63,7 @@ function randomBytes(length: number): Uint8Array {
     return injectedGenerator(length);
   }
   if (typeof crypto === "undefined" || typeof crypto.getRandomValues !== "function") {
-    throw new CryptoError("crypto_algorithm_error", "secure random source unavailable");
+    throw new NonceError("crypto_algorithm_error", "secure random source unavailable");
   }
   return crypto.getRandomValues(new Uint8Array(length));
 }
@@ -47,7 +73,7 @@ export function generateNonce(algorithm: NonceAlgorithm): Uint8Array {
   const length = NONCE_LENGTHS[algorithm];
   const nonce = randomBytes(length);
   if (nonce.length !== length) {
-    throw new CryptoError("crypto_algorithm_error", "nonce generation length mismatch");
+    throw new NonceError("crypto_algorithm_error", "nonce generation length mismatch");
   }
   return nonce;
 }
@@ -59,18 +85,16 @@ const HEX_REGEX = /^[0-9a-fA-F]*$/;
  * hex and the resulting length matches the algorithm's expected nonce length.
  * Returns a typed result so callers branch on `ok` without parsing messages.
  */
-export function decodeNonce(value: string, algorithm: NonceAlgorithm): CryptoResult<Uint8Array> {
+export function decodeNonce(value: string, algorithm: NonceAlgorithm): NonceResult<Uint8Array> {
   if (typeof value !== "string" || value.length === 0) {
-    return cryptoFail(
-      new CryptoError("crypto_validation_error", "nonce must be a non-empty string"),
-    );
+    return nonceFail(new NonceError("crypto_validation_error", "nonce must be a non-empty string"));
   }
   if (value.length % 2 !== 0) {
-    return cryptoFail(new CryptoError("crypto_validation_error", "nonce hex length must be even"));
+    return nonceFail(new NonceError("crypto_validation_error", "nonce hex length must be even"));
   }
   if (!HEX_REGEX.test(value)) {
-    return cryptoFail(
-      new CryptoError("crypto_validation_error", "nonce contains non-hex characters"),
+    return nonceFail(
+      new NonceError("crypto_validation_error", "nonce contains non-hex characters"),
     );
   }
 
@@ -81,15 +105,12 @@ export function decodeNonce(value: string, algorithm: NonceAlgorithm): CryptoRes
 
   const expected = NONCE_LENGTHS[algorithm];
   if (bytes.length !== expected) {
-    return cryptoFail(
-      new CryptoError(
-        "crypto_validation_error",
-        `nonce must be ${expected} bytes for ${algorithm}`,
-      ),
+    return nonceFail(
+      new NonceError("crypto_validation_error", `nonce must be ${expected} bytes for ${algorithm}`),
     );
   }
 
-  return cryptoOk(bytes);
+  return nonceOk(bytes);
 }
 
 /** Encode a nonce byte array to canonical lowercase hex. */
@@ -109,15 +130,12 @@ export function encodeNonce(nonce: Uint8Array): string {
 export function validateNonceLength(
   nonce: Uint8Array,
   algorithm: NonceAlgorithm,
-): CryptoResult<Uint8Array> {
+): NonceResult<Uint8Array> {
   const expected = NONCE_LENGTHS[algorithm];
   if (nonce.length !== expected) {
-    return cryptoFail(
-      new CryptoError(
-        "crypto_validation_error",
-        `nonce must be ${expected} bytes for ${algorithm}`,
-      ),
+    return nonceFail(
+      new NonceError("crypto_validation_error", `nonce must be ${expected} bytes for ${algorithm}`),
     );
   }
-  return cryptoOk(nonce);
+  return nonceOk(nonce);
 }
