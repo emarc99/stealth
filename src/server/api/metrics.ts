@@ -76,7 +76,7 @@ export const METRIC_DESCRIPTORS = {
   api_latency: ["method", "path", "status", "type", "synthetic"],
   api_errors_total: ["method", "path", "status", "type", "synthetic", "error_type"],
   abuse_dependency_fallback: ["check", "decision", "errorType", "policy", "route"],
-  postage_limit_rejected: ["limit"],
+  postage_limit_rejected: ["limit", "actorId", "ip", "fingerprint", "sender", "relayId"],
 } as const;
 
 export type MetricName = keyof typeof METRIC_DESCRIPTORS;
