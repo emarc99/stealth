@@ -833,7 +833,8 @@ export const openApiDocument = {
                     },
                   },
                   insufficientPostage: {
-                    summary: "Policy Denied — Postage provided is below recipient minimum requirement",
+                    summary:
+                      "Policy Denied — Postage provided is below recipient minimum requirement",
                     value: {
                       data: {
                         allowed: false,
@@ -869,7 +870,8 @@ export const openApiDocument = {
             },
           },
           "400": {
-            description: "Bad Request — Invalid request JSON structure or missing Content-Type header",
+            description:
+              "Bad Request — Invalid request JSON structure or missing Content-Type header",
             content: {
               "application/json": {
                 schema: {
